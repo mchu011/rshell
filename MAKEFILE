@@ -1,0 +1,10 @@
+objects = main.cpp
+
+CFLAGS = -Wall -Werror -ansi -pedantic
+
+all:rshell
+	g++
+
+rshell: $(objects)
+	g++ -o $(CFlAGS) $(objects)
+

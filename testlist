@@ -1,0 +1,3 @@
+ls -a;parser&&pmt;cd testdir||mkdir testdir
+pmt
+ls 
