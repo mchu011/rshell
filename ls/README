@@ -1,0 +1,3 @@
+Code to execute a single command of ls
+
+Available flags of ls are -l, -a, and -R
