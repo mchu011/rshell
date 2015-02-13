@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string>
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -31,12 +32,34 @@ int main() {
 	cout << "which function?: ";
 	cin >> choice;
 	cout << endl;
-
+	
+	//checks to see if first argument is directory
+	struct stat src;
+	if (-1 == stat(srcfile.c_str(), &src)) {
+		perror("src");
+		exit(EXIT_FAILURE);
+	}
+	if (S_ISDIR(src.st_mode)) {
+		cerr << "invalid target: " << srcfile 
+			<< " is directory" << endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	struct stat dst;
+	//Checks to see if file exists. We WANT this to fail.
+	int dstret = stat(dstfile.c_str(), &dst);
+	if (dstret == -1) errno = 0;
+	else if (dstret == 0) {
+		cerr << "error: " << dstfile 
+			<< " already exists." << endl;
+		exit(EXIT_FAILURE);
+	} 
+	
 	if(choice == "1") getput(srcfile, dstfile);
 	else if (choice == "2") rwchar(srcfile, dstfile);
 	else if (choice == "3") rwbuff(srcfile, dstfile);
 	else {
-		cout << "invalid choice of function." << endl;
+		cerr << "invalid choice of function." << endl;
 	}
 }
 
@@ -121,7 +144,7 @@ void rwbuff(string in, string out) {
 		perror("open src file");
 	}
 
- 	int ofd = open(out.c_str(), O_WRONLY | O_CREAT);
+ 	int ofd = open(out.c_str(), O_WRONLY | O_CREAT, S_IRWXU);
  	if(ofd == -1) 
         {
 		perror("open dst file");
