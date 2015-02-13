@@ -13,7 +13,7 @@ using namespace std;
 
 void getput(const string src, string dst);
 void rwchar(string src, string dst);
-void rwbuff(string src, string dst);
+void rwbuff(string in, string out);
 
 int main() {
 	
@@ -84,11 +84,10 @@ void rwchar(string src, string dst) {
 		perror("open dst file");
 	}
 	
-	int buffersize = 1;
-	char buf[buffersize];
+	char buf[1];
 	int ret;
 	do{
-		ret = read(fd_src, buf, buffersize);
+		ret = read(fd_src, buf, 1);
 		if(ret == -1) {
 			perror("read");
 		}
@@ -103,8 +102,35 @@ void rwchar(string src, string dst) {
 	
 	return;
 }
-	
-void rwbuff(string src, string dst) {
+
+void rwbuff(string in, string out) {
+     	int fd = open(in.c_str(), O_RDONLY);
+	if (fd == -1)
+        {
+		perror("open src file");
+	}
+
+ 	int ofd = open(out.c_str(), O_WRONLY | O_CREAT);
+ 	if(ofd == -1) 
+        {
+		perror("open dst file");
+	}
+
+	char buf[BUFSIZ];	
+	int bytes_read = read(fd, buf, BUFSIZ);
+ 	if(bytes_read == -1)
+        {               
+        	perror("read");
+        }
+        
+        int bytes_written = write(ofd, buf, bytes_read);
+	if(bytes_written == -1)
+        {            
+        	perror("write");
+        }
+        
+        if(-1 == close(fd)) perror("close src");
+	if(-1 == close(ofd)) perror("close src");
 
 	return;
 }	
