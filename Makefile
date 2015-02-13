@@ -10,5 +10,11 @@ all: rshell
 	
 rshell: $(objects)
 	g++ $(CFLAGS) $(objects)
+
+cp:
+	g++ $(CFLAGS) src/cp.cpp -o bin/cp
+
+clean:
+	rm -rf bin
 	
 #endif
