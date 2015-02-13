@@ -108,8 +108,8 @@ void rwchar(string src, string dst) {
 	t.elapsedUserTime(eTime);
 	cout << "elapsed time: " << eTime << endl;
 	
-	close(fd_src);
-	close(fd_dst);
+	if(close(fd_src) == -1) perror("close fd_src");
+	if(close(fd_dst) == -1) perror("close src");
 	
 	return;
 }
