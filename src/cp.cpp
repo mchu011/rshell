@@ -84,7 +84,7 @@ void rwchar(string src, string dst) {
 		perror ("open src file");
 	}
 	
-	int fd_dst = open(dst.c_str(), O_WRONLY | O_CREAT);
+	int fd_dst = open(dst.c_str(), O_WRONLY | O_EXCL | O_CREAT);
 	
 	if(fd_dst == -1) {
 		perror("open dst file");
@@ -121,7 +121,7 @@ void rwbuff(string in, string out) {
 		perror("open src file");
 	}
 
- 	int ofd = open(out.c_str(), O_WRONLY | O_CREAT);
+ 	int ofd = open(out.c_str(), O_WRONLY | O_EXCL | O_CREAT);
  	if(ofd == -1) 
         {
 		perror("open dst file");
