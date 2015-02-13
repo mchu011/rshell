@@ -60,11 +60,17 @@ void getput(const string src, string dst){
 	}	
 	
 	char c;
+	Timer t;
+	double eTime;
+	t.start();
 	
 	while (!is.eof()){
 		is.get(c);
 		outfile.put(c);
 	};
+	
+	t.elapsedUserTime(eTime);
+	cout <<  "Elapsed time: " << eTime << endl;
 	
 	is.close();
 	outfile.close();
@@ -86,6 +92,9 @@ void rwchar(string src, string dst) {
 	
 	char buf[1];
 	int ret;
+	Timer t;
+	double eTime;
+	t.start();
 	do{
 		ret = read(fd_src, buf, 1);
 		if(ret == -1) {
@@ -96,6 +105,8 @@ void rwchar(string src, string dst) {
 			perror("write");
 		}
 	}while(ret != 0);
+	t.elapsedUserTime(eTime);
+	cout << "elapsed time: " << eTime << endl;
 	
 	close(fd_src);
 	close(fd_dst);
@@ -116,7 +127,10 @@ void rwbuff(string in, string out) {
 		perror("open dst file");
 	}
 
-	char buf[BUFSIZ];	
+	char buf[BUFSIZ];
+        Timer t;
+	double eTime;
+	t.start();	
 	int bytes_read = read(fd, buf, BUFSIZ);
  	if(bytes_read == -1)
         {               
@@ -128,7 +142,9 @@ void rwbuff(string in, string out) {
         {            
         	perror("write");
         }
-        
+        t.elapsedUserTime(eTime);
+	cout << "Elapsed time: " << eTime << endl;
+	
         if(-1 == close(fd)) perror("close src");
 	if(-1 == close(ofd)) perror("close src");
 
