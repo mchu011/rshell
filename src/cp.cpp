@@ -109,7 +109,7 @@ void rwchar(string src, string dst) {
 	cout << "elapsed time: " << eTime << endl;
 	
 	if(close(fd_src) == -1) perror("close fd_src");
-	if(close(fd_dst) == -1) perror("close src");
+	if(close(fd_dst) == -1) perror("close fd_dst");
 	
 	return;
 }
@@ -146,7 +146,7 @@ void rwbuff(string in, string out) {
 	cout << "Elapsed time: " << eTime << endl;
 	
         if(-1 == close(fd)) perror("close src");
-	if(-1 == close(ofd)) perror("close src");
+	if(-1 == close(ofd)) perror("close dest");
 
 	return;
 }	
