@@ -4,8 +4,10 @@
 #include <stdio.h>			//separates connectors (; || &&)
 #include <unistd.h>			//and commands (> >> < |) into tokens
 #include <stdlib.h>
-#include <iostream> 		//still need to edit with shell file
+#include <iostream> 	
 #include <string.h>
+
+using namespace std;
 
 char* cmtout(char* c)	//find comments and comment them out
 {
@@ -35,8 +37,13 @@ void exitcode(char* k)		//if string is "exit", close program
 	}
 }
 
-char** parseCmd(std::string s)		//parser to separate commands and connectors to tokens
+void parseCmd(string s, char** &cl, bool empty)//parser to separate commands and connectors to tokens
 {
+	if(empty)	//return if empty string
+	{
+		return;
+	}
+	
 	char* c = (char*)s.c_str();	//gets string from main code
 	char* clist;
 	int k = 0;
@@ -169,7 +176,8 @@ char** parseCmd(std::string s)		//parser to separate commands and connectors to 
 		tokenlist[i] = strtok(NULL, " ");
 	}
 	
-	return  tokenlist;	
+	cl = tokenlist;	
+	return;
 }
 
 
