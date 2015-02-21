@@ -37,7 +37,7 @@ void exitcode(char* k)		//if string is "exit", close program
 	}
 }
 
-void parseCmd(string s, char** &cl, bool empty)//parser to separate commands and connectors to tokens
+void parseCmd(string s, char** cl, bool empty)//parser to separate commands and connectors to tokens
 {
 	if(empty)	//return if empty string
 	{
