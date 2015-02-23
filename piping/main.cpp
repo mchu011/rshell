@@ -13,7 +13,7 @@
 #include "parser.h"
 #include "getusername.h"
 #include "gethostname.h"
-#include "cmdlexec.h"		//compiler issues here FIXME
+#include "cmdLexec.h"		//compiler issues here FIXME
 #include "execute.h"		//connector code: hope it connects
 #include "cp.h"
 
