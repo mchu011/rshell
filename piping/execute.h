@@ -6,6 +6,8 @@
 #include <string.h>			//need to fix execution error
 
 #include "cmdLexec.h"
+#include "cp.h"
+#include "pipe.h"
 
 using namespace std;
 
@@ -33,7 +35,7 @@ bool bgd(int arg, char** cmd, bool empty) //checks for background processes
 	return backgrdck;
 }
 
-void cnctexec(char** str, bool piper){		//first copy execution list into local
+void cnctexec(char** str, bool &piper){		//first copy execution list into local
 					//list to determine execution
         char** args;	
         args = new char*[50];

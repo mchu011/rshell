@@ -37,13 +37,13 @@ void exitcode(char* k)		//if string is "exit", close program
 	}
 }
 
-void parseCmd(string s, char** cl, bool empty)//parser to separate commands and connectors to tokens
+int parseCmd(string s, char** cl, bool empty)//parser to separate commands and connectors to tokens
 {
 	if(empty)	//return if empty string
 	{
-		return;
+		return 0;
 	}
-	
+	int counter = 0;	
 	char* c = (char*)s.c_str();	//gets string from main code
 	char* clist;
 	int k = 0;
@@ -170,14 +170,15 @@ void parseCmd(string s, char** cl, bool empty)//parser to separate commands and 
 	clist[j+k] = '\0';	//add null to end of list
 	
 	char** tokenlist;		//make tokenlist
-	tokenlist[0] = strtok(clist, " ");
+	tokenlist[0] = strtok(clist, " \t\n");
 	for(int i = 1; clist[i];i++)
 	{
-		tokenlist[i] = strtok(NULL, " ");
+		tokenlist[i] = strtok(NULL, " \t\n");
+		counter++;
 	}
 	
 	cl = tokenlist;	
-	return;
+	return counter;
 }
 
 

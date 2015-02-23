@@ -13,14 +13,35 @@
 
 using namespace std;
 
-void cprwbuf(string in, string out) {
-     	int fd = open(in.c_str(), O_RDONLY);
+void cprwbuf(char** in, char** out) {
+	char* inner;
+	int hold = 0;
+	for(int d = 0; in[d] ; d++)
+	{
+		for(int q = 0; in[d][q]; q++)
+		{
+			inner[hold] = in[d][q];
+			hold++;
+		}
+	}
+	char* outer;
+	hold = 0;
+	for(int d = 0; out[d]; d++)
+	{
+		for(int q = 0; out[d][q]; q++)
+		{	
+			outer[hold] = out[d][q];
+			hold++;
+		}
+	}
+
+     	int fd = open(inner, O_RDONLY);
 	if (fd == -1)
         {
 		perror("open src file");
 	}
 
- 	int ofd = open(out.c_str(), O_WRONLY | O_CREAT | O_EXCL);
+ 	int ofd = open(outer, O_WRONLY | O_CREAT | O_EXCL);
  	if(ofd == -1) 
         {
 		perror("open dst file");

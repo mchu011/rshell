@@ -1,6 +1,47 @@
 #ifndef PIPE_H
 #define PIPE_H
 
+#include <unistd.h>
+#include <string.h>
+
+#include "execute.h"
+#include "cmdLexec.h"
+#include "cp.h"
+
+using namespace std;
+
+void dupit(char **d)
+{
+	for(int l = 0; d[l] ; l++)
+	{
+		int filed;
+		if(strcmp(d[l], ">") == 0)
+		{
+			d[l] == '\0';
+			if((filed = open(d[l=1], O_CREAT | O_WRONLY | O_TRUNC, 0666))==-1)
+				 perror("prob with open.");
+			if((dup2(filed, 1) == -1)) perror("issue with dup2");
+			break;
+		}
+		else if(strcmp(d[l], ">>") == 0)
+		{
+			d[l] == '\0';
+			if((filed = open(d[l=1], O_CREAT | O_WRONLY | O_APPEND, 0666))==-1)
+				 perror("prob with open.");
+			if((dup2(filed, 1) == -1)) perror("issue with dup2");
+			break;
+		}
+		else if(strcmp(d[l], "<")== 0)
+		{
+			d[l] == '\0';
+			if((filed = open(d[l=1], O_RDONLY))==-1)
+				 perror("prob with open.");
+			if((dup2(filed, 0) == -1)) perror("issue with dup2");
+			break;
+		}
+	}
+}
+
 void pipexec(char** a, char** b, bool &c)
 {
 	int filedir[2];
@@ -34,6 +75,7 @@ void pipexec(char** a, char** b, bool &c)
 		exit(1);
 	}
 	else
+	{	
 		int savestdin;
 		if((savestdin = dup(0)) == -1)
 		{
@@ -75,10 +117,10 @@ void pipexec(char** a, char** b, bool &c)
 				perror("ther's a problem with pid2 wait");
 			}
 		}
-	}
-	if(dup2(savestdin) == -1)
-	{
-		perror("ther's a problem with dup2 savstdin");
+		if(dup(savestdin) == -1)
+		{
+			perror("ther's a problem with dup savstdin");
+		}
 	}
 	return;
 }

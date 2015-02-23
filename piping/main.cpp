@@ -13,7 +13,7 @@
 #include "parser.h"
 #include "getusername.h"
 #include "gethostname.h"
-#include "cmdLexec.h"		//compiler issues here FIXME
+#include "cmdlexec.h"		//compiler issues here FIXME
 #include "execute.h"		//connector code: hope it connects
 #include "cp.h"
 
@@ -55,7 +55,7 @@ int main ()
 		char**  cmd;	//parsed command
 		cmd = new char*[100];
 		
-		parseCmd(cmdncmt,cmd,emptycmd);	//parse command
+		int pars = parseCmd(cmdncmt,cmd,emptycmd);	//parse command
 		
 		bgck = false;
 		bgck = bgd(pars,cmd, emptycmd);	//check if there's a background process
