@@ -1,20 +1,17 @@
 #ifndef MAKEFILE
 #define MAKEFILE
 
-objects = ../src/ls.cpp
+objects = main.cpp
 
 CFLAGS = -Wall -Werror -ansi -pedantic
 
 all: rshell
-	mkdir bin; mkdir ls
+	cd rshell bin
 	
 rshell: $(objects)
 	g++ $(CFLAGS) $(objects)
 
-cp:
-	g++ $(CFLAGS) src/cp.cpp -o bin/cp
-
 clean:
-	rm -rf bin
+	rm -rf rshell
 	
 #endif
