@@ -3,13 +3,37 @@
 					//and sends redirector, pipe, and cp, ls
 #include <unistd.h>			//to next cmdlexec functions
 #include <stdio.h>
-#include <string.h>
+#include <string.h>			//need to fix execution error
 
 #include "cmdLexec.h"
 
 using namespace std;
 
-void cnctexec(char** str){		//first copy execution list into local
+bool bgd(int arg, char** cmd, bool empty) //checks for background processes
+{
+	bool backgrdck = false;
+	if(arg > 0) arg--;
+	
+	if(empty == false && strcmp(cmd[arg], "&") == 0)
+	{
+		backgrdck = true;
+		cmd[arg] =  NULL;
+	}
+	else if(empty == false)
+	{
+		char* checker = cmd[arg];
+		int clen = strlen(cmd[arg]) - 1;
+		if(checker[clen] == '&')
+		{
+			backgrdck = true;
+			checker[clen] = '\0';
+			cmd[arg] = checker; 
+		}
+	}
+	return backgrdck;
+}
+
+void cnctexec(char** str, bool piper){		//first copy execution list into local
 					//list to determine execution
         char** args;	
         args = new char*[50];
@@ -18,13 +42,13 @@ void cnctexec(char** str){		//first copy execution list into local
 	bool firstcmd = false;
 	int i = 0;
         int j = 0;
-        for(;str[i] != '\0'; i++)       //parse through char pointer array
+        for(;str[i] != '\0'; i++)       //parse through char pointer array for connectors
         {
                 if(strcmp(str[i],";") == 0)	//';' execute and continue
                 {				
 			args[j] == '\0';			
 
-			if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp") // checks command arguments
+			if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp" || args[0] == "cat" || args[0] == "echo") // checks command arguments
 			{
 				checkcmd(args);
 			}
@@ -33,7 +57,7 @@ void cnctexec(char** str){		//first copy execution list into local
 			{
 				if(args[k] == ">" || args[k] == ">>" || args[k] == "<" || args[k] == "|")
 				{
-					redircmd(args, firstcmd);	//goes to execute redirect or pipe command
+					redircmd(args, firstcmd, piper);	//goes to execute redirect or pipe command
 					rdir = true;
 				}
 			}
@@ -46,7 +70,7 @@ void cnctexec(char** str){		//first copy execution list into local
 			{
                        		if(execvp(args[0],args) == -1)//execute whatever args is
                         	{
-                                	perror("there's an error on execvp.");//error checking
+                                	perror("there's an error on ; execvp.");//error checking
                                 	exit(1);
                       		}
 			}
@@ -56,11 +80,11 @@ void cnctexec(char** str){		//first copy execution list into local
 			j = 0;
 
                 }	
-                else if(strcmp(str[i], "&&") == 0)//execute second if first true
+                else if(strcmp(str[i], "&&") == 0)// "&&": execute second if first true
 		{	
 			args[j] == '\0';
 
-			if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp") // checks command arguments
+			if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp" || args[0] == "cat" || args[0] == "echo") // checks command arguments
 			{
 				checkcmd(args);
 			}
@@ -69,7 +93,7 @@ void cnctexec(char** str){		//first copy execution list into local
 			{
 				if(args[k] == ">" || args[k] == ">>" || args[k] == "<" || args[k] == "|")
 				{
-					redircmd(args, firstcmd);	//goes to execute redirect or pipe command
+					redircmd(args, firstcmd, piper);	//goes to execute redirect or pipe command
 					rdir = true;
 				}
 			}
@@ -95,7 +119,7 @@ void cnctexec(char** str){		//first copy execution list into local
 			{
                        		if(execvp(args[0],args) == -1)//execute whatever args is	//becomes first command
                         	{
-                                	perror("there's an error on execvp.");//error checking
+                                	perror("there's an error on && execvp.");//error checking
                                 	exit(1);
                       		}
 				else 
@@ -122,11 +146,11 @@ void cnctexec(char** str){		//first copy execution list into local
 			j = 0;
 				
 		}
-		else if(strcmp(str[i], "||") == 0)    //use second if first false
+		else if(strcmp(str[i], "||") == 0)    //"||": use second if first false
                 {
 			args[j] == '\0';
 
-			if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp") // checks command arguments
+			if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp" || args[0] == "cat" || args[0] == "echo") // checks command arguments
 			{
 				checkcmd(args);
 			}
@@ -135,7 +159,7 @@ void cnctexec(char** str){		//first copy execution list into local
 			{
 				if(args[k] == ">" || args[k] == ">>" || args[k] == "<" || args[k] == "|")
 				{
-					redircmd(args, firstcmd);	//goes to execute redirect or pipe command
+					redircmd(args, firstcmd, piper);	//goes to execute redirect or pipe command
 					rdir = true;
 				}
 			}
@@ -161,7 +185,7 @@ void cnctexec(char** str){		//first copy execution list into local
 			{
                        		if(execvp(args[0],args) == -1)//execute whatever args is	//becomes first command
                         	{
-                                	perror("there's an error on execvp.");//error checking
+                                	perror("there's an error on || execvp.");//error checking
                                 	exit(1);
                       		}
 				else 
@@ -195,7 +219,7 @@ void cnctexec(char** str){		//first copy execution list into local
         }
         args[j] = '\0';	//if goes through to end of string
 	
-	if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp") // checks command arguments
+	if(args[0] == "cd" || args[0] == "ls" || args[0] == "cp" || args[0] == "cat" || args[0] == "echo") // checks command arguments
 	{
 		checkcmd(args);
 	}
@@ -204,7 +228,7 @@ void cnctexec(char** str){		//first copy execution list into local
 	{
 		if(args[k] == ">" || args[k] == ">>" || args[k] == "<" || args[k] == "|")
 		{
-			redircmd(args, firstcmd);	//goes to execute redirect or pipe command
+			redircmd(args, firstcmd, piper);	//goes to execute redirect or pipe command
 			rdir = true;
 		}
 	}

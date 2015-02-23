@@ -6,10 +6,11 @@
 #include <stdio.h>	//figure out cd "home" stuff and functions
 			//complete executions of each demand
 #include "cp.h"
+#include "pipe.h"
 
 using namespace std;
 
-void redircmd(char** a, bool &firstc)
+void redircmd(char** a, bool &firstc, bool pip)
 {
 	char** execute;		//checks for redirection commands
 	execute = new char*[50];
@@ -19,28 +20,52 @@ void redircmd(char** a, bool &firstc)
 	{
 		if(strcmp(a[p], ">") == 0) //redirect and overwrites fd to 
 		{ //uses int ec                                     //file on the right
-		
+			execute[e] = '\0';
+			if(execute[0] == "0" || execute[0] == "1" || execute[0] == "2")
+			{
+					
+			}	
+			// else if a file or directory
+			//else say if it is a command 
  		}
         	else if(strcmp(a[p], "<") == 0) //accept input from file on right
 	        {//uses int ec
+			execute[e] = '\0';
+
 				
 	       	}
-        	else if(strcmp(a[p], "|") == 0)//pipes command
-		{
-				
-        	}
 		else if(strcmp(a[p], ">>") == 0) //redirect and append fd to
 	        {//uses int ec                                       //file on right
+			execute[e] = '\0';
+
  			
 	        }
+        	else if(strcmp(a[p], "|") == 0)//pipes command
+		{
+			execute[e] = '\0';//gets part 1 of pipe
+			
+			char**scndprt;
+			scndprt = new char*[50];
+			int k = 0;
+			for(;a[p]; p++)
+			{
+				scndprt[k] = a[p];
+				k++;
+			}
+			scndprt[k] = '\0';
+			
+			pipexec(execute, scndprt, pip);
+
+			delete[] scndprt;
+        	}
 		else
 		{
 			execute[e] = a[p];	//assigns string of before to execute
 			e++;
 		}
 	}
-	execute[e] = '\0';
 	
+	delete[] execute;
 
 	return;
 }
@@ -55,11 +80,10 @@ void checkcmd(char** a)
 	{	
        	 	if(Asize == 2) // if the size 
         	{
-                	char *tohome = getenv("HOME");  //issue here
-                        if(chdir(home) == -1)	//FIXME
-                        {
-                        	perror("theres an error in chdir1");
-                        }
+			if(execvp(a[0],a) == -1)
+			{
+				perror( "there's an error in cd execvp");
+			}
                 }
                 else
                 {
@@ -83,6 +107,22 @@ void checkcmd(char** a)
 		{
 			cout <<"too many arguments for cp" << endl;
 		}
+	}
+	else if(strcmp(a[0], "cat") == 0)
+	{
+		for(int k = 1; a[k]; k++)
+		{
+			cout << a[k];
+		}
+		cout << endl;
+	}
+	else if(strcmp(a[0], "echo") == 0)
+	{
+		for(int k = 1; a[k]; k++)
+		{
+			cout << a[k];
+		}
+		cout <<endl;
 	}
 	return;
 }

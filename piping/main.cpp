@@ -31,7 +31,8 @@ int main ()
 	string cmdLn;	//command line recieve
 	char* cmdncmt;	//command to be parsed
 	char buf[BUFSIZ];
-	
+	bool bgck = false;
+
 	while (1) 
 	{
 		if(!getcwd(buf, BUFSIZ))	//perror
@@ -56,6 +57,9 @@ int main ()
 		
 		parseCmd(cmdncmt,cmd,emptycmd);	//parse command
 		
+		bgck = false;
+		bgck = bgd(pars,cmd, emptycmd);	//check if there's a background process
+
 		child = fork();	//fork child
 		
 		if(child == -1)	//perror check
@@ -65,7 +69,7 @@ int main ()
 		}
 		else if(child == 0)	//child function
 		{
-			cnctexec(cmd);//go into connector executions
+			cnctexec(cmd, bgck);//go into connector executions
 			exit(0);
 		}
 		else		//parent function
