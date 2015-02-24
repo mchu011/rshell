@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <stdio.h>
+#include <stdio.h>	//fix parsing tokens
 #include <unistd.h>
 #include <stdlib.h>
 #include <iostream> 		//still need to edit with shell file
@@ -25,14 +25,6 @@ char* cmtout(char* c)	//find comments and comment them out
 	}
 
 	return c;
-}
-
-void exitcode(char* k)		//if string is "exit", close program
-{
-	if(strcmp(k, "exit") == 0)
-	{
-		exit(1);
-	}
 }
 
 char** parseCmd(std::string s)		//parser to separate commands and connectors to tokens
@@ -123,42 +115,5 @@ char** parseCmd(std::string s)		//parser to separate commands and connectors to 
 }
 
 
-
-/*void init_info(parseInfo *p)
-{
-	#initialize parse info struct
-}
-
-void parse_command(char*command, struct commandType *comm)
-{
-	#parse a single command
-}
-
-parseInfo *parse (char *cmdline) #parse commandline for space separated commands
-{
-	#for each command in commandline
-	{
-		if(cmd == command)
-		{
-			parse_command(cmd, type);
-		}
-	}
-}
-
-void print_info (parseInfo *info)
-{
-	#for each type in parseinfo
-	{
-		#print "type_name: type"
-	}
-}
-
-void free_info (parseInfo *info)
-{
-	#for each memory block in parseInfo
-	{
-		free(memory_block)
-	}
-}*/
 #endif
 
