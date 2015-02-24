@@ -1,3 +1,5 @@
-Code to execute a single command of ls
+Code to execute the ls command in code execution
 
-Available flags of ls are -l, -a, and -R
+Available flags for this ls are -l, -a, and -R
+
+Has color and format structure to take input of
