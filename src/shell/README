@@ -1,2 +1,9 @@
 Writing a basic command shell and tests
 with connectors and executions
+
+
+BUGS
+
+- can't print multiple commands
+- connector issues
+

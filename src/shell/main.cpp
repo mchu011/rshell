@@ -1,7 +1,7 @@
 #include <iostream>		//still needs to be edited
 #include <unistd.h>			//connectors issue in connector code execution
-#include <stdio.h>			//fix parsers	
-#include <string.h>
+#include <stdio.h>			//fix parsers:keeps returning garbage	
+#include <string.h>			//once it reacehs connectors
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -13,6 +13,7 @@
 #include "gethostname.h"
 #include "getusername.h"
 #include "execute.h"
+#include "cntexec.h"
 #include "exit.h"
 
 using namespace std;
@@ -26,7 +27,6 @@ int main ()
 	
 	int child;	//child Pid
 	string cmdLn;	//command line
-	char* cmdncmt;
 	char**  cmd;
 	int status;//for parent function
 	char buf[BUFSIZ];
@@ -42,10 +42,8 @@ int main ()
 		printf(" $ ");			//print command line
 
 		getline(cin, cmdLn);
-		cmdncmt = cmtout((char*)cmdLn.c_str());	//keep out comments
-		exitcode(cmdncmt);		//exit code
 		
-		cmd = parseCmd(cmdncmt);	//parse command
+		cmd = parseCmd(cmdLn);	//parse command
 
 		child = fork();
 		
@@ -56,7 +54,7 @@ int main ()
 		}
 		else if(child == 0)
 		{
-			myexec(cmd);//error in execution
+			myexec(cmd); //error in executing connectors
 			exit(0);
 		}
 		else		//parent function

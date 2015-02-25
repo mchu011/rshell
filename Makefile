@@ -9,7 +9,7 @@ all: rshell cp ls piping
 	mv all bin
 
 rshell: $(objects)
-	g++ $(flags) $(objects) -o rshell.o
+	g++ $(flags) $(objects) -o shell.o
 
 cp: $(objects)
 	g++ $(flags) $(objects) -o cp.o

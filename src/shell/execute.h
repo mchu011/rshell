@@ -1,25 +1,31 @@
 #ifndef EXECUTE_H
 #define EXECUTE_H
 
-#include <unistd.h>
-#include <stdio.h>
+#include <unistd.h>	//looks through tokens list
+#include <stdio.h>	//for some reason, it skips the connectors
 
 #include "cntexec.h"
+#include "exit.h"
 
 void myexec(char** a)
 {
-	for(int i = 0; a[i]; i++)
+	bool complete = false;
+	for(int i = 0; a[i]; i++)	//glances through token list
 	{
-		if(a[i] == ";" || a[i] == "&&" || a[i] == "||")
+		if(a[i] == ";" || a[i] == "&&" || a[i] == "||")//finds connector call
 		{
-			cnctexec(a);
+			cnctexec(a);	//execute by connectors
+			complete = true;
 		}
 	}
-	
-	if(execvp(a[0],a) == -1)
+
+	if(complete == false) //execute if there are no connectors
 	{
-		perror("myexec execvp");
-		exit(1);
+		if(execvp(a[0],a) == -1)
+		{
+			perror("myexec execvp");
+			exit(1);
+		}
 	}
 	
 	return;

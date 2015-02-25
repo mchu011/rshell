@@ -1,7 +1,7 @@
 #ifndef CNTEXEC_H			
 #define CNTEXEC_H			//distinguishes separate commands from connectors
-					//and sends redirector, pipe, and cp, ls
-#include <unistd.h>			//to next cmdlexec functions
+					
+#include <unistd.h>			
 #include <stdio.h>
 #include <string.h>			//need to fix execution error
 
@@ -18,32 +18,28 @@ void cnctexec(char** str){		//first copy execution list into local
 	int i = 0;
         int j = 0;
 	int execute;
-        for(;str[i] != '\0'; i++)       //parse through char pointer array for connectors
+        for(;str[i]; i++)       //parse through char pointer array for connectors
         {
-                if(strcmp(str[i],";") == 0)	//';' execute and continue
+                if(str[i] == ";")	//';' execute and continue
                 {				
-			args[j] == '\0';			
+			exitcode(args);    //checks if command is exit
 			
-			exitcode(args);
-			
-                       	if((execute = execvp(args[0],args)) == -1)//execute whatever args is
+                       	if((execute = execvp(args[0],args)) == -1)   //execute whatever args is
                         {
-                        	perror("there's an error on ; execvp.");//error checking
+                        	perror("there's an error on ; execvp.");   //error checking
                                 exit(1);
                       	}
 
-			delete[] args;	//reset args
+			delete[] args;	        //reset args
 			args = new char*[50];
 			j = 0;
 
                 }	
-                else if(strcmp(str[i], "&&") == 0)// "&&": execute second if first true
+                else if(str[i] == "&&")  // "&&": execute second if first true
 		{	
-			args[j] == '\0';
-			
-			exitcode(args);	//checks if command is exit			
+			exitcode(args);	     //checks if command is exit			
 
-                       	if((execute = execvp(args[0],args)) == -1)//execute whatever args is	//becomes first command
+                       	if((execute = execvp(args[0],args)) == -1)    //execute whatever args is & becomes first command
                         {
                                 perror("there's an error on && execvp.");//error checking
                                 exit(1);
@@ -71,10 +67,8 @@ void cnctexec(char** str){		//first copy execution list into local
 			j = 0;
 				
 		}
-		else if(strcmp(str[i], "||") == 0)    //"||": use second if first false
+		else if(str[i] == "||")    //"||": use second if first false
                 {
-			args[j] == '\0';
-			
 			exitcode(args); //checks if command is exit
 			
                        	if((execute = execvp(args[0],args)) == -1)//execute whatever args is	//becomes first command
@@ -110,8 +104,6 @@ void cnctexec(char** str){		//first copy execution list into local
                 }
 		
         }
-        args[j] = '\0';	//if goes through to end of string
-	
 	exitcode(args);
 
 	if(execvp(args[0],args) == -1)//execute whatever args is
