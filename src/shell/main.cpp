@@ -32,7 +32,7 @@ int main ()
 	int status;//for parent function
 	char buf[BUFSIZ];
 	bool emptystr = false;
-	char** args;
+	char* args;
 
 
 	while (1) 
@@ -55,13 +55,13 @@ int main ()
 		{
 			emptystr = true;
 		}
-		args = new char*[50];
+		args = new char[50];
 
 		parseCmd(emptystr, cmd, args);	//parse command into tokens FIXME
 
-		for(int k = 0; args[k] != NULL; k++)
+		for(int k = 0; args[k] != '\0'; k++)
 		{
-			cout << args[k] << endl;
+			printf("%s\n", args[k]);
 		}
 		return 0;		
 
