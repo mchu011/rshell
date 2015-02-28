@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void addspace(string &s)
+void addspace(string &s)	//add spaces before and after connectors
 {
 	int sz = s.size();
 	
@@ -89,25 +89,24 @@ void addspace(string &s)
 	}
 }
 
-/*
-char** parseCmd(string s)	FIXME	//parser to separate commands and connectors to tokens
+void parseCmd(bool& a, char clist[], char** res) //parse command to tokenize
 {
+	int cntsz = 0;
 	char** tokenlist;
-	tokenlist[0] = strtok(clist, " "); //get the first token
-	for(int i = 1; clist[i];i++)
-	{
-		tokenlist[i] = strtok(NULL, " "); //get the rest of token
-	}
-	//delete[] clist; //do not include this
+	tokenlist[cntsz] = strtok(clist, " \t\n"); //FIXME segfault here
 
-	for(int p = 0; tokenlist[p]; p++)
+	while(tokenlist[cntsz] != NULL)
 	{
-		cout << tokenlist[p] << endl;
+		if(a)	//if string is empty, then break the tokenizing
+		{
+			break;
+		}	
+		cntsz++;
+		tokenlist[cntsz] = strtok(NULL, " \t\n");
 	}
-	
-	return  tokenlist;	
-}*/
-
+	res = tokenlist;
+	return;
+}
 
 #endif
 

@@ -31,6 +31,9 @@ int main ()
 	char cmd[BUFSIZ];
 	int status;//for parent function
 	char buf[BUFSIZ];
+	bool emptystr = false;
+	char** args;
+
 
 	while (1) 
 	{
@@ -48,7 +51,18 @@ int main ()
 		
 		exitcode(cmd);	//exit if phrase is exit
 
-		parseCmd(cmd);	//parse command into tokens FIXME
+		if(strcmp(cmd, "") == 0)	
+		{
+			emptystr = true;
+		}
+		args = new char*[50];
+
+		parseCmd(emptystr, cmd, args);	//parse command into tokens FIXME
+
+		for(int k = 0; args[k] != NULL; k++)
+		{
+			cout << args[k] << endl;
+		}
 		return 0;		
 
 		child = fork();
@@ -71,6 +85,8 @@ int main ()
 			}
 		}
 		sleep(1);
+		emptystr = false;
+		delete[] args;
 	}
 
 	return 0;
