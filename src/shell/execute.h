@@ -18,7 +18,9 @@ void myexec(char** a)
 			complete = true;
 		}
 	}
-
+	
+	exitcode(a);
+	
 	if(complete == false) //execute if there are no connectors
 	{
 		if(execvp(a[0],a) == -1)

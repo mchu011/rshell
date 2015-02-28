@@ -1,13 +1,14 @@
 #include <iostream>		//still needs to be edited
 #include <unistd.h>			//connectors issue in connector code execution
-#include <stdio.h>			//fix parsers:keeps returning garbage	
-#include <string.h>			//once it reacehs connectors
+#include <stdio.h>			//fix parse cmd 	
+#include <string.h>			
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <cstdlib>
 #include <pwd.h>
+#include <vector>
 
 #include "parser.h"
 #include "gethostname.h"
@@ -27,7 +28,7 @@ int main ()
 	
 	int child;	//child Pid
 	string cmdLn;	//command line
-	char**  cmd;
+	char cmd[BUFSIZ];
 	int status;//for parent function
 	char buf[BUFSIZ];
 
@@ -41,9 +42,14 @@ int main ()
 		cout << username << "@" << hostname;
 		printf(" $ ");			//print command line
 
-		getline(cin, cmdLn);
+		getline(cin, cmdLn); //get command
+		addspace(cmdLn);   //add spaces to connectors
+		strcpy(cmd, cmdLn.c_str());	//copy into a char pointer
 		
-		cmd = parseCmd(cmdLn);	//parse command
+		exitcode(cmd);	//exit if phrase is exit
+
+		parseCmd(cmd);	//parse command into tokens FIXME
+		return 0;		
 
 		child = fork();
 		
@@ -54,7 +60,7 @@ int main ()
 		}
 		else if(child == 0)
 		{
-			myexec(cmd); //error in executing connectors
+			//myexec(cmd); //error in executing connectors
 			exit(0);
 		}
 		else		//parent function

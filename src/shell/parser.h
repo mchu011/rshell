@@ -2,107 +2,111 @@
 #define PARSER_H
 
 #include <stdio.h>	//fix parsing tokens
-#include <unistd.h>	
-#include <stdlib.h>
-#include <iostream> 		//still need to edit with shell file
+#include <unistd.h>	//get tokens to work
+#include <stdlib.h>	
+#include <iostream> 		
 #include <string.h>
+#include <vector>
+#include <cstdlib>
+#include <cstdio>
 
 using namespace std;
 
-char** parseCmd(string s)		//parser to separate commands and connectors to tokens
+void addspace(string &s)
 {
-	char* c = (char*)s.c_str();
-	char* clist = new char[100];
-	int k = 0;
-	int j = 0;
+	int sz = s.size();
 	
-	for(j; c[j]; j++)	//for no space between connectors until NULL
+	for(int i = 0; i < sz; i++)
 	{
-		if(c[j] == '#') //if character is a comment
+		if(s[i] == ';')	//for connector ';'
 		{
+			if(s[i-1] != ' ' || s[i+1] != ' ')
+			{
+				if(s[i-1] != ' ' && s[i+1] != ' ')
+				{
+					s.insert(i+1, " ");
+					s.insert(i, " ");
+				}
+				else if(s[i-1] != ' ' && i != 0)
+				{
+					s.insert(i, " ");
+				}
+				else if(s[i+1] != ' ')
+				{
+					s.insert(i+1, " ");
+				}
+			}
+		}
+		else if(s[i] == '#')//for comments
+		{
+			s[i] = '\0';
 			break;
 		}
-		else if(c[j] == ';')	//if character is ';'
+		else if(s[i] == '&')	//for connector '&&'
 		{
-			if (c[j-1] != ' ') //if there is no space before ';'
+			if(s[i+1] == '&')
 			{
-				clist[j+k] = ' ';
-				k++;
-			}
-			clist[j+k] = c[j];
-			k++;
-			if(c[j+1] != ' ') //if there is no space after ';'
-			{
-				clist[j+k] = ' ';
-				k++;
-			}	
-		}
-		else if(c[j] == '&') //for '&'
-		{
-			if(c[j+1] == '&')//if there is another '&'
-			{
-				if(c[j-1] != ' ') //add spaces before
+				if(s[i-1] != ' ' || s[i+2] != ' ')
 				{
-					c[j+k] = ' ';
-					k++;
-				}	
-				clist[j+k] = c[j];//save '&&' to list
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] !=  ' ')//add space after
-				{
-					clist[j+k] = ' ';
-					k++;
+					if(s[i-1] != ' ' && s[i+2] != ' ')
+					{
+						s.insert(i+1, " ");
+						s.insert(i, " ");
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");
+					}
+					else if(s[i+2] != ' ')
+					{
+						s.insert(i+1, " ");
+					}
 				}
 			}
-			else
-			{
-				clist[j+k] = c[j];
-				k++;
-			}
 		}
-		else if(c[j] == '|') //for '||'
+		else if(s[i] == '|')	//for connector '||'
 		{
-			if(c[j+1] == '|')
+			if(s[i+1] == '|')
 			{
-				if(c[j-1] != ' ') //add spaces before
+				if(s[i-1] != ' ' || s[i+2] != ' ')
 				{
-					clist[j+k] = ' ';
-					k++;
-				}
-				clist[j+k] = c[j];//save '||'
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] != ' ') //add space after
-				{
-					clist[j+k] = ' ';
-					k++;
+					if(s[i-1] != ' ' && s[i+2] != ' ')
+					{
+						s.insert(i+1, " ");
+						s.insert(i, " ");
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");
+					}
+					else if(s[i+2] != ' ')
+					{
+						s.insert(i+1, " ");
+					}
 				}
 			}
-			else
-			{
-				clist[j+k] = c[j];
-				k++;
-			}
-		}
-		else{		//pass regular char into clist
-			clist[j+k] = c[j];
 		}
 	}
-	clist[j+k] = '\0';	//end of clist line
-	
+}
+
+/*
+char** parseCmd(string s)	FIXME	//parser to separate commands and connectors to tokens
+{
 	char** tokenlist;
-	tokenlist[0] = strtok(clist, "  \t\n");//token until space, tab, or newline
+	tokenlist[0] = strtok(clist, " "); //get the first token
 	for(int i = 1; clist[i];i++)
 	{
-		tokenlist[i] = strtok(NULL, "  \t\n");
+		tokenlist[i] = strtok(NULL, " "); //get the rest of token
 	}
-	delete[] clist;
+	//delete[] clist; //do not include this
+
+	for(int p = 0; tokenlist[p]; p++)
+	{
+		cout << tokenlist[p] << endl;
+	}
 	
 	return  tokenlist;	
-}
+}*/
 
 
 #endif
