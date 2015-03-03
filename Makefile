@@ -5,20 +5,20 @@ objects = src/main.cpp
 
 flags = -Wall -Werror -ansi -pedantic
 
-all: rshell cp ls piping
+all: rshell ls piping signal
 	mv all bin
 
 rshell: $(objects)
 	g++ $(flags) $(objects) -o shell.o
-
-cp: $(objects)
-	g++ $(flags) $(objects) -o cp.o
 
 ls: $(objects)
 	g++ $(flags) $(objects) -o ls.o
 
 piping:$(objects)
 	g++ $(flags) $(objects) -o pipe.o
+
+signal:$(objects)
+	g++ $(flags) $(objects) -o signal.o
 
 clear:
 	rm -mf bin
