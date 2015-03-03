@@ -1,9 +1,28 @@
-Writing a basic command shell and tests
-with connectors and executions
+Writing a basic command shell and tests with connectors and executions.
 
+Source code for shell:
+
+
+
+main.cpp
+-contains main code body and 
+
+parser.h 
+-contains functions for separating input string into separate tokens
+
+gethostname.h
+-gets host name of the computer
+
+getusername.h
+-gets the user's name 
+
+execute.h
+-determines if the execution has connectors or not
+-executes functions
+
+cntexec.h
+-execute code with connectors
 
 BUGS
 
-- can't print multiple commands
-- connector issues
 

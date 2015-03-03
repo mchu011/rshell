@@ -3,7 +3,7 @@
 					
 #include <unistd.h>			
 #include <stdio.h>
-#include <string.h>			//need to fix execution error
+#include <string.h>			
 
 #include "exit.h"
 
@@ -12,16 +12,18 @@ using namespace std;
 void cnctexec(char** str){		//first copy execution list into local
 					//list to determine execution
         char** args;	
-        args = new char*[50];
+        args = new char*[50];//allocate separate new char** for single commands
 	
 	bool firstcmd = false;	
 	int i = 0;
         int j = 0;
-	int execute;
+	int execute;//for && and ||
+
         for(;str[i]; i++)       //parse through char pointer array for connectors
         {
                 if(str[i] == ";")	//';' execute and continue
-                {				
+                {
+			args[j] = '\0';				
 			exitcode(args);    //checks if command is exit
 			
                        	if((execute = execvp(args[0],args)) == -1)   //execute whatever args is
@@ -36,7 +38,8 @@ void cnctexec(char** str){		//first copy execution list into local
 
                 }	
                 else if(str[i] == "&&")  // "&&": execute second if first true
-		{	
+		{
+			args[j] = '\0';	
 			exitcode(args);	     //checks if command is exit			
 
                        	if((execute = execvp(args[0],args)) == -1)    //execute whatever args is & becomes first command
@@ -69,6 +72,8 @@ void cnctexec(char** str){		//first copy execution list into local
 		}
 		else if(str[i] == "||")    //"||": use second if first false
                 {
+		
+			args[j] = '\0';
 			exitcode(args); //checks if command is exit
 			
                        	if((execute = execvp(args[0],args)) == -1)//execute whatever args is	//becomes first command
@@ -81,7 +86,7 @@ void cnctexec(char** str){		//first copy execution list into local
 				firstcmd = true;
 			}	
 
-			if(firstcmd)	//if first command is exacutable, skip next command
+			if(firstcmd)	//if first command is executable, skip next command
 			{
 				firstcmd = false; // reset first cmd
 				for(;str[i]; i++)
@@ -101,10 +106,10 @@ void cnctexec(char** str){		//first copy execution list into local
                 else{           //assign argument with string at i
                         args[j] = str[i];
 			j++;
-                }
-		
+                }	
         }
-	exitcode(args);
+	args[j] = '\0';//reaches to final command/end of string
+	exitcode(args);	//check if command is exit
 
 	if(execvp(args[0],args) == -1)//execute whatever args is
         {
