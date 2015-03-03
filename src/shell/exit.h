@@ -16,26 +16,4 @@ void exitcode(char* k)
 	return;
 }
 
-void exitcode(char** k)
-{
-	char* h;
-	int r = 0;
-	for(int p = 0; k[p]; p++)
-	{
-		for(int q = 0; k[p][q]; q++)
-		{
-			h[r] = k[p][q];
-			r++;
-		}
-		h[r] = '\0';
-		if(strcmp(h, "exit") == 0)
-		{
-			exit(1);
-		}
-		r = 0;
-	}
-	return;
-}
-
-
 #endif 

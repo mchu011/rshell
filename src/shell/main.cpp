@@ -1,6 +1,6 @@
 #include <iostream>		//still needs to be edited
-#include <unistd.h>			//connectors issue in connector code execution
-#include <stdio.h>			//it's not executing 	
+#include <unistd.h>		//connectors execution issue			
+#include <stdio.h>			 	
 #include <string.h>			
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -26,14 +26,11 @@ int main ()
 	getusername(username);	//getusername
 	gethnm(hostname);	//gethostname
 	
-	int child;	//child Pid
 	string cmdLn;	//command line
 	char cmd[BUFSIZ];
-	int status;//for parent function
 	char buf[BUFSIZ];
 	bool emptystr = false;
 	char** args;
-
 
 	while (1) 
 	{
@@ -59,25 +56,7 @@ int main ()
 
 		parseCmd(emptystr, cmd, args);	//parse command into tokens
 						//and save into args
-		child = fork();	//fork
-		
-		if(child == -1)
-		{
-			perror("there's an error with fork().");
-			exit(1);
-		}
-		else if(child == 0)	//child function
-		{
-			myexec(args); //execute argurments
-			exit(0);
-		}
-		else		//parent function
-		{
-			if(waitpid(child, &status, 0) == -1)//wait and perror
-			{
-				perror("there's an error with wait().");
-			}
-		}
+		cnctexec(emptystr, args);
 		//sleep(1);//pause 1 sec
 		emptystr = false;//reset settings
 		delete[] args;

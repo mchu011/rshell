@@ -5,7 +5,7 @@ Source code for shell:
 
 
 main.cpp
--contains main code body and 
+-contains main code body
 
 parser.h 
 -contains functions for separating input string into separate tokens
@@ -17,12 +17,12 @@ getusername.h
 -gets the user's name 
 
 execute.h
--determines if the execution has connectors or not
--executes functions
+-executes code piece
 
 cntexec.h
--execute code with connectors
+-separate connectors contenct and execute
 
 BUGS
+-can't execute multiple different statements especially ||
 
 

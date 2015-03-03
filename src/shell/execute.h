@@ -1,34 +1,40 @@
 #ifndef EXECUTE_H
 #define EXECUTE_H
 
-#include <unistd.h>	//looks through tokens list
-#include <stdio.h>	//for some reason, it skips the connectors
+#include <unistd.h>	//executes via fork
+#include <stdio.h>
+#include <string.h>
 
-#include "cntexec.h"
-#include "exit.h"
-
-void myexec(char** a)
+void myexec(bool &first, char** a)
 {
-	bool complete = false;
-	for(int i = 0; a[i]; i++)	//glances through token list
-	{
-		if(a[i] == ";" || a[i] == "&&" || a[i] == "||")//finds connector call
+	int execute;
+	int status;
+	int child; 
+	child = fork(); //fork
+        if(child == -1)
+        {
+              	perror("there's an error with fork().");
+                exit(1);
+        }
+        else if(child == 0)     //child function
+        {
+                if((execute = execvp(a[0], a)) == -1) //execute argurments
 		{
-			cnctexec(a);	//execute by connectors
-			complete = true;
+			perror("myexec cvp");
 		}
-	}
-	
-	exitcode(a);
-	
-	if(complete == false) //execute if there are no connectors
-	{
-		if(execvp(a[0],a) == -1)
+		else if(execute == 0)
 		{
-			perror("myexec execvp");
-			exit(1);
+			first = true;
 		}
-	}
+                exit(0);
+        }
+        else            //parent function
+        {
+                if(waitpid(child, &status, 0) == -1)//wait and perror
+                {
+                        perror("there's an error with wait().");
+                }
+        }
 	
 	return;
 }

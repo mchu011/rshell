@@ -1,97 +1,91 @@
 #ifndef CNTEXEC_H			
 #define CNTEXEC_H			//distinguishes separate commands from connectors
-					
-#include <unistd.h>			
+
+#include <unistd.h>			//has issues with multiple different 			
 #include <stdio.h>
 #include <string.h>			
 
+#include "execute.h"
 #include "exit.h"
 
 using namespace std;
 
-void cnctexec(char** str){		//first copy execution list into local
+void cnctexec(bool empty, char** str){		//first copy execution list into local
 					//list to determine execution
-        char** args;	
+        if(empty)	//checks if string is empty
+	{
+		return;
+	}
+	char** args;	
         args = new char*[50];//allocate separate new char** for single commands
 	
-	bool firstcmd = false;	
+	bool firstcmd = false;//for && and ||	
 	int i = 0;
         int j = 0;
-	int execute;//for && and ||
 
-        for(;str[i]; i++)       //parse through char pointer array for connectors
+        while(str[i] != NULL)       //parse through char pointer array for connectors
         {
-                if(str[i] == ";")	//';' execute and continue
+                if(strcmp(str[i],";") == 0)	//';' execute and continue
                 {
-			args[j] = '\0';				
-			exitcode(args);    //checks if command is exit
+			args[j] = '\0';
+			if(strstr(args[0], "exit") != NULL)
+			{	
+				exitcode(args[0]);    //checks if command is exit
+			}
 			
-                       	if((execute = execvp(args[0],args)) == -1)   //execute whatever args is
-                        {
-                        	perror("there's an error on ; execvp.");   //error checking
-                                exit(1);
-                      	}
-
+			myexec(firstcmd, args);
+			
 			delete[] args;	        //reset args
+			
 			args = new char*[50];
 			j = 0;
-
+			firstcmd = false;
+			i++;
                 }	
-                else if(str[i] == "&&")  // "&&": execute second if first true
+                else if(strcmp(str[i], "&&") == 0)  // "&&": execute second if first true
 		{
 			args[j] = '\0';	
-			exitcode(args);	     //checks if command is exit			
-
-                       	if((execute = execvp(args[0],args)) == -1)    //execute whatever args is & becomes first command
-                        {
-                                perror("there's an error on && execvp.");//error checking
-                                exit(1);
-                      	}
-			else if(execute == 0) 
+			if(strstr(args[0], "exit") != NULL)
 			{
-				firstcmd = true;
-			}	
+				exitcode(args[0]);	     //checks if command is exit
+			}			
+
+			myexec(firstcmd, args);
 
 			if(firstcmd == false)	//if first command is not exacutable, skip next command
 			{
 				for(;str[i]; i++)
 				{
-					if(str[i+1] == ";" || str[i+1] == "||" || str[i+1] == "&&")
+					if(strstr(str[i+1],";") != NULL || strstr(str[i+1],"||") != NULL || strstr(str[i+1], "&&") != NULL)
 					{
 						break;
 					}
 				}
 			}
-			//execute next command
 			
 			firstcmd = false; // reset first cmd			
 			delete[] args;		//reset args
 			args = new char*[50];
 			j = 0;
-				
+			i++;	
 		}
-		else if(str[i] == "||")    //"||": use second if first false
+		else if(strcmp(str[i], "||") == 0)    //"||": use second if first false
                 {
 		
 			args[j] = '\0';
-			exitcode(args); //checks if command is exit
-			
-                       	if((execute = execvp(args[0],args)) == -1)//execute whatever args is	//becomes first command
-                       	{
-                               	perror("there's an error on || execvp.");//error checking
-                               	exit(1);
-                     	}
-			else if(execute == 0)
+			if(strstr(args[0], "exit") != NULL)  //FIXME segfalut here
 			{
-				firstcmd = true;
-			}	
-
+				exitcode(args[0]); //checks if command is exit
+			}
+			
+			myexec(firstcmd, args);
+			
 			if(firstcmd)	//if first command is executable, skip next command
 			{
 				firstcmd = false; // reset first cmd
 				for(;str[i]; i++)
 				{
-					if(str[i+1] == ";" || str[i+1] == "||" || str[i+1] == "&&")
+					if(strstr(str[i+1], ";") != NULL || strstr(str[i+1], "||") != NULL || strstr(str[i+1], "&&") != NULL)
 					{
 						break;
 					}
@@ -102,20 +96,22 @@ void cnctexec(char** str){		//first copy execution list into local
 			delete[] args;			//reset args
 			args = new char*[50];
 			j = 0;
+			i++;
                 }
                 else{           //assign argument with string at i
                         args[j] = str[i];
 			j++;
+			i++;
                 }	
         }
 	args[j] = '\0';//reaches to final command/end of string
-	exitcode(args);	//check if command is exit
+	
+	if(strstr(args[0], "exit") != NULL)
+	{
+		exitcode(args[0]);	//check if command is exit
+	}
 
-	if(execvp(args[0],args) == -1)//execute whatever args is
-        {
-        	perror("there's an error on execvp.");//error checking
-                exit(1);
-        }
+	myexec(firstcmd, args);
 
 	firstcmd = false;// reset first cmd
 	delete[] args;	//deallocate args
