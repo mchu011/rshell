@@ -1,6 +1,6 @@
 #include <iostream>		//still needs to be edited
 #include <unistd.h>		//connectors execution issue			
-#include <stdio.h>			 	
+#include <stdio.h>		// of && and ||	 	
 #include <string.h>			
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -29,7 +29,6 @@ int main ()
 	string cmdLn;	//command line
 	char cmd[BUFSIZ];
 	char buf[BUFSIZ];
-	bool emptystr = false;
 	char** args;
 
 	while (1) 
@@ -48,17 +47,15 @@ int main ()
 		
 		exitcode(cmd);	//exit if phrase is exit
 
-		if(strcmp(cmd, "") == 0)	
+		if(strcmp(cmd, "") != 0)//if the command is null	
 		{
-			emptystr = true;
-		}
-		args = new char*[50];	//allocate new char** array
+			args = new char*[50];	//allocate new char** array
 
-		parseCmd(emptystr, cmd, args);	//parse command into tokens
+			parseCmd(cmd, args);	//parse into tokens
 						//and save into args
-		cnctexec(emptystr, args);
+			cnctexec(args);
+		}
 		//sleep(1);//pause 1 sec
-		emptystr = false;//reset settings
 		delete[] args;
 	}
 

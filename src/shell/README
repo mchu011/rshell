@@ -23,6 +23,6 @@ cntexec.h
 -separate connectors contenct and execute
 
 BUGS
--can't execute multiple different statements especially ||
+-can't execute multiple statements of || and &&
 
 

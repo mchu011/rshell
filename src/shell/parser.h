@@ -89,7 +89,7 @@ void addspace(string &s)	//add spaces before and after connectors
 	}
 }
 
-void parseCmd(bool& a, char clist[], char** res) //parse command to tokenize
+void parseCmd(char clist[], char** res) //parse command to tokenize
 {
 	int cntsz = 0;	//array position for res
 	char* tokenlist;
@@ -98,10 +98,6 @@ void parseCmd(bool& a, char clist[], char** res) //parse command to tokenize
 	while(tokenlist != NULL)
 	{
 		res[cntsz] = tokenlist; //save tokenlist into res 
-		if(a)	//if string is empty, then break the tokenizing
-		{
-			break;
-		}	
 		cntsz++;
 		tokenlist = strtok(NULL, " \t\n");
 	}

@@ -1,7 +1,7 @@
 #ifndef CNTEXEC_H			
 #define CNTEXEC_H			//distinguishes separate commands from connectors
 
-#include <unistd.h>			//has issues with multiple different 			
+#include <unistd.h>			//has issues with && and || 			
 #include <stdio.h>
 #include <string.h>			
 
@@ -10,12 +10,8 @@
 
 using namespace std;
 
-void cnctexec(bool empty, char** str){		//first copy execution list into local
+void cnctexec(char** str){		//first copy execution list into local
 					//list to determine execution
-        if(empty)	//checks if string is empty
-	{
-		return;
-	}
 	char** args;	
         args = new char*[50];//allocate separate new char** for single commands
 	
