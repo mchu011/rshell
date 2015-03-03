@@ -32,7 +32,7 @@ int main ()
 	int status;//for parent function
 	char buf[BUFSIZ];
 	bool emptystr = false;
-	char* args;
+	char** args;
 
 
 	while (1) 
@@ -55,17 +55,11 @@ int main ()
 		{
 			emptystr = true;
 		}
-		args = new char[50];
+		args = new char*[50];	//allocate new char** array
 
-		parseCmd(emptystr, cmd, args);	//parse command into tokens FIXME
-
-		for(int k = 0; args[k] != '\0'; k++)
-		{
-			printf("%s\n", args[k]);
-		}
-		return 0;		
-
-		child = fork();
+		parseCmd(emptystr, cmd, args);	//parse command into tokens
+						//and save into args
+		child = fork();	//fork
 		
 		if(child == -1)
 		{
@@ -74,7 +68,7 @@ int main ()
 		}
 		else if(child == 0)
 		{
-			//myexec(cmd); //error in executing connectors
+			myexec(args); //execute
 			exit(0);
 		}
 		else		//parent function
@@ -85,7 +79,7 @@ int main ()
 			}
 		}
 		sleep(1);
-		emptystr = false;
+		emptystr = false;//reset settings
 		delete[] args;
 	}
 
