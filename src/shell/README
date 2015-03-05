@@ -1,8 +1,7 @@
 Writing a basic command shell and tests with connectors and executions.
 
+
 Source code for shell:
-
-
 
 main.cpp
 -contains main code body
@@ -22,7 +21,8 @@ execute.h
 cntexec.h
 -separate connectors contenct and execute
 
+
 BUGS
--can't execute multiple statements of || and &&
+-can't execute of || and &&
 
 

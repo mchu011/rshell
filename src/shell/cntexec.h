@@ -36,9 +36,8 @@ void cnctexec(char** str){		//first copy execution list into local
 			args = new char*[50];
 			j = 0;
 			firstcmd = false;
-			i++;
                 }	
-                else if(strcmp(str[i], "&&") == 0)  // "&&": execute second if first true
+                /*else if(strcmp(str[i], "&&") == 0)  // "&&": execute second if first true FIXME
 		{
 			args[j] = '\0';	
 			if(strstr(args[0], "exit") != NULL)
@@ -48,11 +47,14 @@ void cnctexec(char** str){		//first copy execution list into local
 
 			myexec(firstcmd, args);
 
-			if(firstcmd == false)	//if first command is not exacutable, skip next command
-			{
+			if(firstcmd == false)	//if first command is not executable
+			{			//skip next command
 				for(;str[i]; i++)
 				{
-					if(strstr(str[i+1],";") != NULL || strstr(str[i+1],"||") != NULL || strstr(str[i+1], "&&") != NULL)
+					if(strstr(str[i+1],";") != NULL || 
+						strstr(str[i+1],"||") != NULL || 
+						strstr(str[i+1], "&&") != NULL ||
+						strcmp(str[i+1], '\0') == 0)
 					{
 						break;
 					}
@@ -63,13 +65,12 @@ void cnctexec(char** str){		//first copy execution list into local
 			delete[] args;		//reset args
 			args = new char*[50];
 			j = 0;
-			i++;	
 		}
-		else if(strcmp(str[i], "||") == 0)    //"||": use second if first false
+		else if(strcmp(str[i], "||") == 0)    //"||": use second if first false FIXME
                 {
 		
 			args[j] = '\0';
-			if(strstr(args[0], "exit") != NULL)  //FIXME segfalut here
+			if(strstr(args[0], "exit") != NULL)  //segfalut here
 			{
 				exitcode(args[0]); //checks if command is exit
 			}
@@ -81,7 +82,10 @@ void cnctexec(char** str){		//first copy execution list into local
 				firstcmd = false; // reset first cmd
 				for(;str[i]; i++)
 				{
-					if(strstr(str[i+1], ";") != NULL || strstr(str[i+1], "||") != NULL || strstr(str[i+1], "&&") != NULL)
+					if(strstr(str[i+1], ";") != NULL || 
+						strstr(str[i+1], "||") != NULL || 
+						strstr(str[i+1], "&&") != NULL ||
+						strcmp(str[i+1], '\0') == 0)
 					{
 						break;
 					}
@@ -92,13 +96,12 @@ void cnctexec(char** str){		//first copy execution list into local
 			delete[] args;			//reset args
 			args = new char*[50];
 			j = 0;
-			i++;
-                }
+                }*/
                 else{           //assign argument with string at i
                         args[j] = str[i];
 			j++;
-			i++;
-                }	
+                }
+		i++;	
         }
 	args[j] = '\0';//reaches to final command/end of string
 	
