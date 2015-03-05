@@ -3,14 +3,13 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
-#include "execute.h"
-#include "cmdLexec.h"
-#include "cp.h"
+#include "redirect.h"
 
 using namespace std;
 
-void dupit(char **d)
+void dupit(char **d)	//figure out where this goes
 {
 	for(int l = 0; d[l] ; l++)
 	{
@@ -42,7 +41,7 @@ void dupit(char **d)
 	}
 }
 
-void pipexec(char** a, char** b, bool &c)
+void pipexec(char** a, bool bkgd, char** pth, bool&firstcmd) //execute piping
 {
 	int filedir[2];
 	if(pipe(filedir) == -1)
@@ -50,7 +49,7 @@ void pipexec(char** a, char** b, bool &c)
 		perror("there's a problem with pipe");
 	}
 
-	int pipepid = fork();
+	int pipepid = fork();//pipe fork1
 	if(pipepid == -1)
 	{
 		perror("pipepid fork");
@@ -68,7 +67,7 @@ void pipexec(char** a, char** b, bool &c)
 			perror("there's a problem in close");
 		}
 		
-		if(execvp(a[0], a) == -1)
+		if(execvp(a[0], a) == -1)//execute
 		{
 			perror("there's a proplem in pipe child exec");
 		}
@@ -86,8 +85,7 @@ void pipexec(char** a, char** b, bool &c)
 			perror("there's a problem with wait");
 		}
 		
-
-		int pid2 = fork();
+		int pid2 = fork();	//pipe fork2
 		if(pid2 == -1)
 		{
 			perror("pid2 fork");
@@ -103,7 +101,7 @@ void pipexec(char** a, char** b, bool &c)
 				perror( "there's a problem with close pid2");
 			}
 			
-			if(execvp(b[0], b) == -1)
+			if(execvp(pth[0], pth) == -1)
 			{
 				perror("ther's a probem in pipe2 child exec");
 			}
@@ -121,6 +119,10 @@ void pipexec(char** a, char** b, bool &c)
 		{
 			perror("ther's a problem with dup savstdin");
 		}
+	}
+	if(!errno)
+	{
+		firstcmd = true;
 	}
 	return;
 }

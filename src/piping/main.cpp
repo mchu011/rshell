@@ -1,85 +1,77 @@
-#include <iostream>	//still needs to be edited FIXME
-#include <unistd.h>		//connectors issue in connector code execution
-#include <stdio.h>		//need to: 			
-#include <string.h>		//figure out what happened with delete
-#include <sys/types.h>		//reread dup and piping	
-#include <sys/wait.h>		//incorporate piping into main code
-#include <sys/stat.h>		
-#include <fcntl.h>		//segfault issue for header codes?
+#include <iostream>		//still needs to be edited
+#include <unistd.h>		//connectors execution issue			
+#include <stdio.h>		// of && and ||	 	
+#include <string.h>			
+#include <sys/types.h>		//FIXME pipe.h modification
+#include <sys/wait.h>		//add redirect file to work on
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <cstdlib>
 #include <pwd.h>
-#include <algorithm>
+#include <vector>
+#include <errno.h>
 
 #include "parser.h"
-#include "getusername.h"
 #include "gethostname.h"
-#include "cmdLexec.h"		//compiler issues here FIXME
-#include "execute.h"		//connector code: hope it connects
+#include "getusername.h"
+#include "execute.h"
+#include "cntexec.h"
+#include "exit.h"
+#include "piping.h"
 #include "cp.h"
+#include "cmdLexec.h"
+#include "redirect.h"
 
 using namespace std;
-
+	
 int main ()
 {
-	char*  username;
+	char *pathval = getenv("PATH");//get path info
+	char *prsPth[50];
+	parsepath(pathval, prsPth);//save path value
+
+	char*  username;//get host and user name
 	char  hostname[25];
-	getusername(username);	//get username
-	gethnm(hostname);	//get hostname
+	getusername(username);
+	gethnm(hostname);	
 	
-	int status;
-	int child;	//child Pid
-	string cmdLn;	//command line recieve
-	char* cmdncmt;	//command to be parsed
-	char buf[BUFSIZ];
-	bool bgck = false;
+	string cmdLn;	//information for 
+	char cmd[BUFSIZ];//running code
+	char buf[BUFSIZ];//more than once
+	char** args;
+	int pars;
+	bool bkgck = false;
 
 	while (1) 
 	{
-		if(!getcwd(buf, BUFSIZ))	//perror
+		if(!getcwd(buf, BUFSIZ))//headers for path command
 		{
-			perror("problem with getcwd");
+			perror("getcwd");
 		}
-		cout << buf << endl;
+		cout << buf << endl;	
+		cout << username << "@" << hostname;
+		printf(" $ ");			//print command line
 
-		cout << username << "@" << hostname; //print command line
-		printf(" $ ");		
-		getline(cin, cmdLn);	//get line from user
+		getline(cin, cmdLn); //get command
+		addspace(cmdLn);   //add spaces to connectors
+		strcpy(cmd, cmdLn.c_str());	//copy into a char pointer
+		
+		exitcode(cmd);	//exit if phrase is exit
 
-		cmdncmt = cmtout((char*)cmdLn.c_str());	//takes comments out
-		exitcode(cmdncmt);		//if the string is 'exit' only
-		
-		bool emptycmd = false;
-		if(!strcmp(cmdncmt,"")) emptycmd = true; //check if empty
-		
-
-		char**  cmd;	//parsed command
-		cmd = new char*[100];
-		
-		int pars = parseCmd(cmdncmt,cmd,emptycmd);	//parse command
-		
-		bgck = false;
-		bgck = bgd(pars,cmd, emptycmd);	//check if there's a background process
-
-		child = fork();	//fork child
-		
-		if(child == -1)	//perror check
+		if(strcmp(cmd, "") != 0)//if the command is null	
 		{
-			perror("there's an error with fork().");
-			exit(1);
+			args = new char*[50];	//allocate new char** array
+
+			pars = parseCmd(cmd, args);//parse into tokens for args
+						//returns args size to pars
+			bkgck = bgd(pars, args); //check background processes
+
+			cnctexec(args, bkgck, prsPth);//execute
+			
+			bkgck = false; //reset background vals
 		}
-		else if(child == 0)	//child function
-		{
-			cnctexec(cmd, bgck);//go into connector executions
-			exit(0);
-		}
-		else		//parent function
-		{
-			if(waitpid(child, &status, 0) == -1)
-			{
-				perror("there's an error with wait().");
-			}
-		}
-		delete[] cmd;//free memory //FIXME issue with free in debug
+		//sleep(1);//pause 1 sec
+		delete[] args;
 	}
 
 	return 0;

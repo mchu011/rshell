@@ -1,185 +1,202 @@
-#ifndef PARSER_H			//parses for commands
-#define PARSER_H			//executes 'exit' command
-					//keeps out comments (#) in command
-#include <stdio.h>			//separates connectors (; || &&)
-#include <unistd.h>			//and commands (> >> < |) into tokens
-#include <stdlib.h>
-#include <iostream> 	
+#ifndef PARSER_H		//used to parse for comments and connectors
+#define PARSER_H
+
+#include <stdio.h>	
+#include <unistd.h>	
+#include <stdlib.h>	
+#include <iostream> 		
 #include <string.h>
+#include <vector>
+#include <cstdlib>
+#include <cstdio>
 
 using namespace std;
 
-char* cmtout(char* c)	//find comments and comment them out
+void addspace(string &s)	//add spaces before and after connectors
 {
-	int counter;
-	for(int i = 0; c[i] != '\0'; i++)	//counts how long string is
-	{
-		counter++;
-	}
-	counter++;
-
-	for(int j = 0; j < counter; j++)	//parses for comment (#)
-	{			
-		if(c[j] == '#')		//replaces comment with NULL
-		{
-			c[j] == '\0';
-		}
-	}
-
-	return c;
-}
-
-void exitcode(char* k)		//if string is "exit", close program
-{
-	if(strcmp(k, "exit") == 0)
-	{
-		exit(1);
-	}
-}
-
-int parseCmd(string s, char** cl, bool empty)//parser to separate commands and connectors to tokens
-{
-	if(empty)	//return if empty string
-	{
-		return 0;
-	}
-	int counter = 0;	
-	char* c = (char*)s.c_str();	//gets string from main code
-	char* clist;
-	int k = 0;
-	int j = 0;
+	int sz = s.size();
 	
-	for(j; c[j]; j++){	//for no space between connectors
-
-		if(c[j] == ';'){		//for connector ';'
-
-			if (c[j-1] != ' '){	//if at end/middle of word
-				clist[j+k] = ' ';
-				k++;
-			}
-
-			clist[j+k] = c[j];
-			k++;
-
-			if(c[j+1] != ' '){	//if at beginning/middle of word
-				clist[j+k] = ' ';
-				k++;
-			}	
-		}
-		else if(c[j] == '&'){		//for connector '&&'
-		
-			if(c[j+1] == '&'){	//checks for second char
-				if(c[j-1] != ' '){	//separates '&&'
-					c[j+k] = ' ';	//into single word
-					k++;		//before tokening
-				}	
-				clist[j+k] = c[j];
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] !=  ' '){
-					clist[j+k] = ' ';
-					k++;
+	for(int i = 0; i < sz; i++)
+	{
+		if(s[i] == ';')	//for connector ';'
+		{
+			if(s[i-1] != ' ' || s[i+1] != ' ')
+			{
+				if(s[i-1] != ' ' && s[i+1] != ' ')
+				{
+					s.insert(i+1, " ");//insert after&before
+					s.insert(i, " ");
 				}
-			}
-			else	{		//if no second char
-						// leave as is since no idea
-				clist[j+k] = c[j];	//what to do 
-				k++;			//with just '&'
-			}				//NOTE modify later
-		}
-		else if(c[j] == '|'){	//for connector '||' and pipe '|'
-		
-			if(c[j+1] == '|'){	//for connector '||'
-			
-				if(c[j-1] != ' '){	//separates '||' 
-					clist[j+k] = ' ';	// into word
-					k++;
+				else if(s[i-1] != ' ' && i != 0)
+				{
+					s.insert(i, " ");//insert before
 				}
-				clist[j+k] = c[j];
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] != ' '){
-					clist[j+k] = ' ';
-					k++;
-				}
-			}
-			else{			//separates '|' into word
-				if(c[j-1] != ' '){
-					clist[j+k] = ' ';
-					k++;
-				}
-				clist[j+k] = c[j];
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] != ' '){
-					clist[j+k] = ' ';
-					k++;
+				else if(s[i+1] != ' ')
+				{
+					s.insert(i+1, " ");//insert after
 				}
 			}
 		}
-		else if(c[j] == '<'){	//for command '<'
-		
-			if (c[j-1] != ' '){	//separates '<' into word
-				clist[j+k] = ' ';
-				k++;
-			}
-			clist[j+k] = c[j];
-			k++;
-			if(c[j+1] != ' '){
-				clist[j+k] = ' ';
-				k++;
-			}	
+		else if(s[i] == '#') //for comments '#'
+		{
+			s[i] = '\0';	//replace with null
+			break;
 		}
-		else if(c[j] == '>'){ 	//for commands '>>' and '>'
-			if(c[j+1] == '>'){	//for '>>'
-				if(c[j-1] != ' '){	//separates '>>'
-					clist[j+k] = ' ';	//into word
-					k++;
+		else if(s[i] == '<')	//for connector '<'
+		{
+			if(s[i-1] != ' ' || s[i+1] != ' ')
+			{
+				if(s[i-1] != ' ' && s[i+1] != ' ')
+				{
+					s.insert(i+1, " ");//insert after&before
+					s.insert(i, " ");
 				}
-				clist[j+k] = c[j];
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] != ' '){
-					clist[j+k] = ' ';
-					k++;
+				else if(s[i-1] != ' ' && i != 0)
+				{
+					s.insert(i, " ");//insert before
+				}
+				else if(s[i+1] != ' ')
+				{
+					s.insert(i+1, " ");//insert after
 				}
 			}
-			else{		//separtates '>' into word
-				if(c[j-1] != ' '){
-					clist[j+k] = ' ';
-					k++;
+		}
+		else if(s[i] == '&')	//for connector '&&'
+		{
+			if(s[i+1] == '&')//if next char is '&'
+			{
+				if(s[i-1] != ' ' || s[i+2] != ' ')
+				{
+					if(s[i-1] != ' ' && s[i+2] != ' ')
+					{
+						s.insert(i+2, " ");//insert after
+						s.insert(i, " ");	//& before
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");//insert before
+					}
+					else if(s[i+2] != ' ')
+					{
+						s.insert(i+2, " ");//insert after
+					}
 				}
-				clist[j+k] = c[j];
-				j++;
-				clist[j+k] = c[j];
-				k++;
-				if(c[j+1] != ' '){
-					clist[j+k] = ' ';
-					k++;
+			}
+		}
+		else if(s[i] == '|')	//for connector '||'
+		{
+			if(s[i+1] == '|') //if next char is '|'
+			{
+				if(s[i-1] != ' ' || s[i+2] != ' ')
+				{
+					if(s[i-1] != ' ' && s[i+2] != ' ')
+					{
+						s.insert(i+2, " ");//insert after
+						s.insert(i, " ");// & before
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");
+					}
+					else if(s[i+2] != ' ')
+					{
+						s.insert(i+2, " ");
+					}
+				}
+			}
+			else //for pipe '|'
+			{
+				if(s[i-1] != ' ' || s[i+1] != ' ')
+				{
+					if(s[i-1] != ' ' && s[i+1] != ' ')
+					{
+						s.insert(i+1, " ");//insert after&before
+						s.insert(i, " ");
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");//insert before
+					}
+					else if(s[i+1] != ' ')
+					{
+						s.insert(i+1, " ");//insert after
+					}
+				}
+			}
+		}
+		else if(s[i] == '>' ) //for redirect ">>"
+		{
+			if(s[i+1] == '>') //if next char is '>'
+			{
+				if(s[i-1] != ' ' || s[i+2] != ' ')
+				{
+					if(s[i-1] != ' ' && s[i+2] != ' ')
+					{
+						s.insert(i+2, " ");//insert after
+						s.insert(i, " ");// & before
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");
+					}
+					else if(s[i+2] != ' ')
+					{
+						s.insert(i+2, " ");
+					}
+				}
+			}
+			else //for redirect '>'
+			{
+				if(s[i-1] != ' ' || s[i+1] != ' ')
+				{
+					if(s[i-1] != ' ' && s[i+1] != ' ')
+					{
+						s.insert(i+1, " ");//insert after&before
+						s.insert(i, " ");
+					}
+					else if(s[i-1] != ' ' && i != 0)
+					{
+						s.insert(i, " ");//insert before
+					}
+					else if(s[i+1] != ' ')
+					{
+						s.insert(i+1, " ");//insert after
+					}
 				}
 			}
 		}	
-		else{		//if just a normal character
-			clist[j+k] = c[j];
-		}
 	}
-	clist[j+k] = '\0';	//add null to end of list
-	
-	char** tokenlist;		//make tokenlist
-	tokenlist[0] = strtok(clist, " \t\n");
-	for(int i = 1; clist[i];i++)
-	{
-		tokenlist[i] = strtok(NULL, " \t\n");
-		counter++;
-	}
-	
-	cl = tokenlist;	
-	return counter;
 }
 
+int parseCmd(char clist[], char** res) //parse command to tokenize
+{
+	int cntsz = 0;	//array position for res
+	char* tokenlist;
+	tokenlist = strtok(clist, " \t\n"); //tok only returns char*
+	
+	while(tokenlist != NULL)
+	{
+		res[cntsz] = tokenlist; //save tokenlist into res 
+		cntsz++;
+		tokenlist = strtok(NULL, " \t\n");
+	}
+	res[cntsz] = '\0';//null at end of string
+	cntsz++;
+	return cntsz; //return size of res
+}
+
+void parsepath(char*path, char**pPath) //get int of path and
+{					//store values in pPath
+	int argsz = 0;
+	pPath[argsz] = strtok(path,":");
+
+	while(pPath[argsz] != NULL)
+	{
+		argsz++;
+		pPath[argsz] = strtok(NULL, ":");
+	}
+	return;
+}
 
 #endif
+
