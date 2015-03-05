@@ -15,25 +15,21 @@
 #include <time.h>
 #include <string.h>
 
-#include "date.h"
 #include "color.h"
 using namespace std;
 
 void printPermissions()
 {
 	struct stat s;
-	if(s.st_mode & S_IFDIR)
-	{
-		std::cout << "d";
-	}
-	else if(!(s.st_mode & S_IFLNK))
-	{
-		std::cout << "l";
-	}
-	else
-	{
-		std::cout << "-";
-	}
+	if(s.st_mode & S_IFDIR) cout << "d";
+	else if(s.st_mode & S_IFLNK) cout << "l";
+	else if(s.st_mode & S_IFREG) cout << "-";
+	else if(s.st_mode & S_IFCHR) cout << "c";
+	else if(s.st_mode & S_IFBLK) cout << "b";
+	else if(s.st_mode & S_IFIFO) cout << "f";
+	else if(s.st_mode & S_IFSOCK) cout << "s";
+	else cout << "-";
+
 	printf((s.st_mode & S_IRUSR) ? "r" : "-");
 	printf((s.st_mode & S_IWUSR) ? "w" : "-");
 	printf((s.st_mode & S_IXUSR) ? "x" : "-");
@@ -44,29 +40,52 @@ void printPermissions()
 	printf((s.st_mode & S_IWOTH) ? "w" : "-");
 	printf((s.st_mode & S_IXOTH) ? "x" : "-");
 
-	std::cout << " "<< s.st_nlink << " ";
+	return;
+}
+
+void printdate()
+{
+	struct stat s;
+	time_t comptim= localtime(&(s.st_mtime))
+	struct tm *t;
+	
+	if(localtime_r(&comptim, &t) == '\0')
+	{
+		perror("There's a problem with localtime");
+	}
+
+	char timout[50];
+
+
+	strftime(timout, 50, "%h", &t);
+	std::cout << timout << " ";	
+	
+	strftime(timout, 50, "%d", &t);
+	std::cout << timout << " ";	
+
+	strftime(timout, 50, "%R", &t);
+	std::cout << timout << " ";	
 	return;
 }
 
 void printlinfo()		//error in this by pw_name and gr_name
 {
-	struct passwd *pw;
-	struct group *grp;
-	string uid, gid;
 	struct stat s;
+	string uid, gid;
+	struct group* grp;
 
-	if( !(pw = getpwuid(s.st_uid)))
-	{
-		perror("There's an error at getpwuid");
-		exit(1);
+	if(getlogin() == NULL)	//if no login name
+	{	
+		string name = "unknown";
+		uid = name;
 	}
-	else
+	else		//gets username
 	{
-		uid = pw->pw_name;
-		std::cout << uid << " ";
+		uid = getlogin();
 	}
+	cout << uid << " " << flush;
 
-	if(!(grp = getgrgid(s.st_gid)))
+	/*if(!(grp = getgrgid(s.st_gid)))
 	{
 		perror("There's an error at getgrid");
 		exit(1);
@@ -74,8 +93,8 @@ void printlinfo()		//error in this by pw_name and gr_name
 	else
 	{
 		gid = grp->gr_name;
-		std::cout << gid << " ";
-	}
+		cout << gid << " " << flush;
+	}*/
 	return;
 }
 
@@ -83,19 +102,20 @@ void printl(vector<string> d) //case l
 {
 	int i = 0;
 	struct stat sfiles;
-	std::cout <<"Total " << std::endl;
+	std::cout <<"Total: " << std::endl;
+
 	while(d[i] != "\0")
 	{
-		//if(sfiles != '.')
-		//if file doesn't have a dot in front, print following
 		printPermissions();	//print permissions
+		
+		cout << " "<< sfiles.st_nlink << " ";
 	
-//		printlinfo(sfiles);	//print getinfo 
+		printlinfo();	//print getinfo 
 
 		std::cout << std::setw(5) << std::right;
 		std::cout<< sfiles.st_size << " ";
 
-		printdate(sfiles);		//print date
+		printdate();		//print date
 		printlfcolor((char*)d[i].c_str());//print file
 
 		printf("\n");

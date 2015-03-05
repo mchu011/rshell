@@ -17,11 +17,8 @@
 #include <errno.h>
 
 #include "ignoredots.h"
-#include "date.h"
-#include "flaga.h"
-#include "flagl.h"
-#include "flagR.h"
-#include "getinfo.h"
+//#include "colformat.h"
+#include "listformat.h"
 
 using namespace std;
 
@@ -33,11 +30,11 @@ int main(int argc, char *argv[])
 		perror("please enter arguments");
 		exit(1);
 	}
-	/*if(argv[1] != "ls")
+	if(strcmp(argv[1],"ls") != 0) //checks if variables are ls
 	{
 		perror("this is ls code, please use ls");
 		exit(1);
-	}*/
+	}
 
 	char* dirName =(char*)".";		//this is to get current directory
 	DIR* directory;
@@ -47,111 +44,99 @@ int main(int argc, char *argv[])
 				
 	while((dirtpoint = readdir(directory)))
 	{
-		//std::cout<< dirtpoint->d_name << std::endl;
 		if(errno != 0)
 		{
 			perror("there's a problem in read dir");
 			exit(1);
 		}
-		dirfiles.push_back(dirtpoint->d_name);
+		dirfiles.push_back(dirtpoint->d_name);//gets filename
 	}
 
-	sort(dirfiles.begin(), dirfiles.end(),locale("en_US.UTF-8"));
-
-	if(closedir(directory) == -1)
-	{
-		perror("there's a problem in closedir");
-		exit(1);
-	}
+	sort(dirfiles.begin(), dirfiles.end(),locale("en_US.UTF-8"));//sorts files
 
 	bool flagA = false;
 	bool flagL = false;
 	bool flagR = false;
 	bool ignore = false;	
 	
-	int j;
-	char* order[10];
-	int loopcnt = 0;
+	int findmxsz;
+	vector<string> store;
 
-	while(argv[loopcnt]) //if there are more than two commands to run
-	{	
-		j = 0;
-
-		for(int i = 1; i < argc; i++)
+	for(int i = 2; i < argc; i++)	//check for flags
+	{
+		if(argv[i][0] == '-')
 		{
-			if(argv[i][0] == '-')
+			for(unsigned int k = 1; k < sizeof(argv[i]);k++)
 			{
-				for(unsigned int k = 1; k < sizeof(argv[i]);k++)
+				if(argv[i][k] == 'a')
 				{
-					if(argv[i][k] == 'a')
-					{
-						flagA = true;
-						order[j] = (char*)"flagA";
-						j++;
-					}
-					if(argv[i][k] == 'l')
-					{
-						flagL = true;
-						order[j] = (char*)"flagL";
-						j++;
-					}
-					if(argv[i][k] == 'R')
-					{
-						flagR = true;
-						order[j] = (char*)"flagR";
-						j++;
-					}
+					flagA = true;
+				}
+				if(argv[i][k] == 'l')
+				{
+					flagL = true;
+				}
+				if(argv[i][k] == 'R')
+				{
+					flagR = true;
 				}
 			}
-		}
-		order[j] = '\0';
-
-
-		for(int k = 0; order[k]; k++)
-		{
-			if(strcmp(order[k], "flagA") == 0)
-			{
-				if(flagA)
-				{
-					ignore = false;
-					//s = takeoutdots(s,ignore);
-					printa(dirfiles);
-				}
-			}
-			if(strcmp(order[k], "flagL") == 0)
-			{
-				if(flagL)
-				{
-					ignore = true;
-					//s = takeoutdots(s,ignore);
-					printl(dirfiles);//execute case b
-				}
-			}
-			if(strcmp(order[k], "flagR") == 0)
-			{
-				if(flagR)
-				{
-					printf(".:\n");
-					ignore = true;
-					//s = takeoutdots(s,ignore);
-					printR(dirfiles);
-				}
-			}
-		}
-
-		if(!(flagA ||flagL ||flagR))
-		{
-			//printls(argv, dirtpoint); //not declared yet
-			execvp(argv[0], argv);	
-		}
-
-		loopcnt++;
-		if(argv[loopcnt] == NULL)
-		{
-			break;
 		}
 	}
+
+
+	if(!(flagA ||flagL ||flagR))//if none of these flags
+	{	
+		//column format
+		store = takeoutdots(dirfiles);
+		//printcol(store);
+		execvp(argv[1], argv);	
+	}
+	else if(flagA && flagL && flagR)//if alR, lRa, Ral, aRl,
+	{			//laR, or Rla
+		printf(".:\n");
+		printl(dirfiles);
+	}
+	else if(flagA && flagL)	//if la or al
+	{
+		printl(dirfiles);
+	}
+	else if(flagA && flagR)	//if aR or Ra
+	{
+		printf(".:\n");
+		//column format
+		//printcol(dirfiles);
+	}
+	else if(flagL && flagR)	//if lR or Rl
+	{
+		printf(".:\n");
+		store = takeoutdots(dirfiles);
+		printl(store);
+	}
+	else if(flagA)	//if a
+	{
+		//column format
+		//printcol(dirfiles);
+	}	
+	else if(flagL)	// if l
+	{
+		store = takeoutdots(dirfiles);
+		printl(store);//execute
+	}
+	else if(flagR)	//if R
+	{
+		printf(".:\n");
+		//column format
+		store = takeoutdots(dirfiles);
+		//printcol(store);
+	}
 	printf("\n");
+
+	if(closedir(directory) == -1)
+	{
+		perror("there's a problem in closedir");
+		exit(1);
+	}
 	
 	return 0;
 }

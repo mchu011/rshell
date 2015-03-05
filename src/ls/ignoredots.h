@@ -1,20 +1,26 @@
 #ifndef IGNOREDOTS_H
 #define IGNOREDOTS_H
 
-void  takeoutdots( bool i)
+#include<vector>	//takes out all files that
+#include<string.h>	//start with '.'
+
+using namespace std;
+
+vector<string> takeoutdots(vector<string> s)
 {
-	if(i)
+	char* check;
+	vector<string> newstr;
+	for(int k = 0; k < s.size(); k++)
 	{
-		//struct stat sn;
+		check = (char*)s[k].c_str();
 		
-		
-
-
-	}
-
-	return; 
+		if(check[0] !=  '.')//takes out files
+		{		//with dots in the front		
+			newstr.push_back(s.at(k));
+		}				
+			
+	}		
+	return newstr; 
 }
-
-
 
 #endif
