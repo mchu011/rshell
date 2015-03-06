@@ -8,7 +8,7 @@
 #ls
 
 -can execute -l flags properly
--list format: needs total size
+-list format: completed to best of ability
 -column format: in progress
 -colors(extra credit): issues
 -a: format in progress

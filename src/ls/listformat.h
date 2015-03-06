@@ -96,6 +96,65 @@ void printlinfo(const struct stat &s)		//error in this by pw_name and gr_name
 	return;
 }
 
+int maxsz(const struct stat &s, vector<string> d)
+{
+	int count = 0;
+	int size, k;
+	for(k = 0; d[k] != "\0"; k++)
+	{
+		size = s.st_size;
+		count += size/10000000;
+	}
+	
+	return count/k;	
+	/*DIR *dir;
+	if(!(dir = opendir(dirNm)))
+	{
+		perror("error with maxsz opendir");
+	}
+	
+	dirent *findlen;
+
+	while(findlen = readdir(dir))
+	{
+		if(errno != 0)
+		{
+			perror("error with maxsz readdir");
+		}
+		struct stat d;
+
+		char dpath[1024];
+		strcpy(dpath, dirNm);
+		strcat(dpath, "/");
+		strcat(dpath, findlen->d_name);
+
+		if(stat(dpath, &dig) == -1)
+		{
+			perror("There's an issue with 1st stat");
+		}
+		
+		if(GetBit(flags, 0))
+		{
+			blocks += d.st_blocks;
+		}
+			if(findlen->d_name[0] != '.')
+			{
+				blocks += d.st_blocks;
+			}
+		}
+		
+		int len1 = 1;
+		int len2 = 1;
+		int curd1 = d.st_size;
+		int curd2 = d.st_nlink;
+		while(curd1 /= 10) len1++;
+		if(len1 > maxdsz) maxdsz = len1;
+		while (curd2 /= 10) len2++;
+		if(len2 > maxdlnk) maxdlnk = len2;
+	}
+	closedir(dir);*/
+}
+
 void printl(bool &ig) //case l
 {
 	char* dirName =(char*)"."; //this is to get current directory
@@ -116,15 +175,20 @@ void printl(bool &ig) //case l
 	}
 
 	sort(dirfiles.begin(), dirfiles.end(),locale("en_US.UTF-8"));//sorts files
-	/*if(ig)
+
+	if(ig)	//takes out dot files
 	{
 		dirfiles = takeoutdots(dirfiles);
-	}*/
+	}
 	dirfiles.push_back("\0");
 
-	int i = 0;
-	std::cout <<"Total: " << std::endl;
+	std::cout <<"Total: "; //<< std::endl;
 
+	struct stat sfiles;
+	int c = maxsz(sfiles, dirfiles);	
+	cout << c << endl;
+	
+	int i = 0;
 	while(dirfiles[i] != "\0")
 	{
 		if(dirfiles[i] == "\0")
@@ -162,7 +226,7 @@ void printl(bool &ig) //case l
 				cout << " "<< sfiles.st_nlink << " ";
 				printlinfo(sfiles);	//print getinfo 
 				size = sfiles.st_size;
-				cout << setw(5) << right << size << " ";
+				cout << setw(7) << right << size << " ";
 				printdate(sfiles);		//print date
 				cout << dirfiles[i] << flush;	
 				//printlfcolor(sfiles, dirtpoint);//print file
