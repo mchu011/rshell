@@ -18,51 +18,49 @@
 #include <string.h>
 #include <algorithm>
 
-void printRfcolor(dirent *dirtp, struct stat s)
+using namespace std;
+
+void printlfcolor(struct stat s, dirent * dirtp)
 {
-	std::cout<< std::endl;
-	std::cout<< std::setw(2) << std::right << "."<<std::endl;
-	std::cout<< ".."<< std::endl;
-	//execute multiple line format with alphabatizing code
-	
-	return;
-}
-void printlfcolor(char * dirtp)
-{
-	struct stat s;
-	if(S_ISDIR(s.st_mode) && dirtp[0] != '.')//
+	if(s.st_mode & S_IFDIR) //blue
 	{	
-		printf("\033[0;34m");
-		printf(dirtp);
-		printf("\33[0m");
+		if(dirtp->d_name[0] == '.')
+		{
+			printf("\033[47m\033[38;5;32m");
+			printf(dirtp->d_name);
+			printf("\033[0;00m");
+		}
+		else
+		{
+			printf("\033[38;5;32m");
+			printf(dirtp->d_name);
+			printf("\033[0;00m");
+		}
 	}
-	else if(S_ISDIR(s.st_mode) && dirtp[0] == '.')
-	{	
-		printf("\033[47m\033[38;5;34m");
-		printf(dirtp);
-		printf("\33[0m");
-	}
-	else if ((s.st_mode & S_IXUSR) && dirtp[0] != '.')//green
+	else if ((s.st_mode & S_IXUSR))//green
 	{
-		printf("\033[0;32m");
-		printf(dirtp);
-		printf("\33[0m");
+		if(dirtp->d_name[0] == '.')
+		{
+			printf("\033[47m\033[38;5;34m");
+			printf(dirtp->d_name);
+			printf("\033[0;00m");
+		}
+		else
+		{
+			printf("\033[38;5;34m");
+			printf(dirtp->d_name);
+			printf("\33[0;00m");
+		}
 	}
-	else if ((s.st_mode & S_IXUSR) && dirtp[0] == '.')
-	{
-		printf("\033[47m\033[38;5;32m");
-		printf(dirtp);
-		printf("\33[0m");
-	}
-	else if(dirtp[0] == '.')//
+	else if(dirtp->d_name[0] == '.')//
 	{
 		printf("\033[0;47m");
-		printf(dirtp);
-		printf("\33[0m");
+		printf(dirtp->d_name);
+		printf("\033[0;00m");
 	}
 	else//black
 	{
-		printf(dirtp);
+		printf(dirtp->d_name);
 	}
 }
 

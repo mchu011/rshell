@@ -7,14 +7,15 @@
 
 #ls
 
--can execute just ls
--takes out dot files when needed
--list format: issues with total size, grpid, st_nlink, st_size, date,  and permissions
+-can execute -l flags properly
+-list format: needs total size
 -column format: in progress
--colors: in progress
+-colors(extra credit): issues
 -a: format in progress
--l: format having issues
+-l: prints total and lists in list format
 -R: Prints .:, format in progress
+-BUGS: column format
+
 
 #piping
 

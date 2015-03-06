@@ -3,3 +3,7 @@ Code to execute the ls command in code execution
 Available flags for this ls are -l, -a, and -R
 
 Has color and format structure to take input of
+
+BUGS:
+-color format:issue printing in correct color
+-column format: issue printing in correct column width

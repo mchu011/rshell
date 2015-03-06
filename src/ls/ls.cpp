@@ -16,8 +16,9 @@
 #include <algorithm>
 #include <errno.h>
 
+#include "color.h"
 #include "ignoredots.h"
-//#include "colformat.h"
+#include "colformat.h"
 #include "listformat.h"
 
 using namespace std;
@@ -36,32 +37,11 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	char* dirName =(char*)".";		//this is to get current directory
-	DIR* directory;
-	directory = opendir(dirName);
-	dirent *dirtpoint;
-	vector<string> dirfiles;
-				
-	while((dirtpoint = readdir(directory)))
-	{
-		if(errno != 0)
-		{
-			perror("there's a problem in read dir");
-			exit(1);
-		}
-		dirfiles.push_back(dirtpoint->d_name);//gets filename
-	}
-
-	sort(dirfiles.begin(), dirfiles.end(),locale("en_US.UTF-8"));//sorts files
-
 	bool flagA = false;
 	bool flagL = false;
 	bool flagR = false;
 	bool ignore = false;	
 	
-	int findmxsz;
-	vector<string> store;
-
 	for(int i = 2; i < argc; i++)	//check for flags
 	{
 		if(argv[i][0] == '-')
@@ -87,56 +67,58 @@ int main(int argc, char *argv[])
 
 	if(!(flagA ||flagL ||flagR))//if none of these flags
 	{	
-		//column format
-		store = takeoutdots(dirfiles);
-		//printcol(store);
+		//column formati
+		ignore = true;
+		//store = takeoutdots(dirfiles);
+		//printcol(ignore);
 		execvp(argv[1], argv);	
 	}
 	else if(flagA && flagL && flagR)//if alR, lRa, Ral, aRl,
 	{			//laR, or Rla
+		ignore = false;
 		printf(".:\n");
-		printl(dirfiles);
+		printl(ignore);
 	}
 	else if(flagA && flagL)	//if la or al
 	{
-		printl(dirfiles);
+		ignore = false;
+		printl(ignore);
 	}
 	else if(flagA && flagR)	//if aR or Ra
 	{
+		ignore = false;
 		printf(".:\n");
 		//column format
-		//printcol(dirfiles);
+		printcol(ignore);
 	}
 	else if(flagL && flagR)	//if lR or Rl
 	{
 		printf(".:\n");
-		store = takeoutdots(dirfiles);
-		printl(store);
+		ignore = true;
+		//store = takeoutdots(dirfiles);
+		printl(ignore);
 	}
 	else if(flagA)	//if a
 	{
+		ignore = false;
 		//column format
-		//printcol(dirfiles);
+		printcol(ignore);
 	}	
 	else if(flagL)	// if l
 	{
-		store = takeoutdots(dirfiles);
-		printl(store);//execute
+		ignore = true;
+		//store = takeoutdots(dirfiles);
+		printl(ignore);//execute
 	}
 	else if(flagR)	//if R
 	{
 		printf(".:\n");
 		//column format
-		store = takeoutdots(dirfiles);
-		//printcol(store);
+		ignore = true;
+		//store = takeoutdots(dirfiles);
+		printcol(ignore);
 	}
 	printf("\n");
-
-	if(closedir(directory) == -1)
-	{
-		perror("there's a problem in closedir");
-		exit(1);
-	}
 	
 	return 0;
 }
