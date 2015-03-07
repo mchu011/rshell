@@ -14,6 +14,7 @@ void myexec(bool &first, char** a)
 	int status;
 	int child; 
 	child = fork(); //fork
+	bool rd = false;
         if(child == -1)
         {
               	perror("there's an error with fork().");
@@ -21,19 +22,23 @@ void myexec(bool &first, char** a)
         }
         else if(child == 0)     //child function
         {
-		if(strstr(a,">") != NULL || 	//if execution is redirect
-			strstr(a, "<") != NULL ||
-			strstr(a, ">>") != NULL)
+		for(int i = 0; a[i]; i++)
 		{
-			redir(first, a);//go to redirection execution
+			if(strstr(a[i],">") != NULL || 	//if execution is redirect
+				strstr(a[i], "<") != NULL ||
+				strstr(a[i], ">>") != NULL)
+			{
+				redir(first, a);//go to redirection execution
+				rd = true;
+			}
 		}
-		else
+		if(rd == false)
 		{
   	              if((execute = execvp(a[0], a)) == -1) //execute argurments
 			{
 				perror("myexec cvp");
 			}
-			if(!errno)
+			if(errno == 0)
 			{
 				first = true;
 			}

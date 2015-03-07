@@ -41,7 +41,7 @@ void dupit(char **d)	//figure out where this goes
 	}
 }
 
-void pipexec(char** a, bool bkgd, char** pth, bool&firstcmd) //execute piping
+void pipexec(char** a, bool& bkgd, char** pth, bool&firstcmd) //execute piping
 {
 	int filedir[2];
 	if(pipe(filedir) == -1)

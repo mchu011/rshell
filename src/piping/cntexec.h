@@ -6,6 +6,9 @@
 #include <string.h>			
 
 #include "execute.h"
+#include "pipe.h"
+#include "cmdLexec.h"
+#include "background.h"
 #include "exit.h"
 
 using namespace std;
@@ -18,7 +21,7 @@ void cnctexec(char** str, bool bkgrd, char **pPath){	//first copy execution list
 	bool firstcmd = false;//for && and ||	
 	int i = 0;
         int j = 0;
-
+	bool rdir = false;
         while(str[i] != NULL)       //parse through char pointer array for connectors
         {
                 if(strcmp(str[i],";") == 0)	//';' execute and continue
@@ -28,11 +31,17 @@ void cnctexec(char** str, bool bkgrd, char **pPath){	//first copy execution list
 			{	
 				exitcode(args[0]);    //checks if command is exit
 			}
-			else if(strstr(args, "|") != NULL)
+			
+			for(int k = 0; args[k]; k++)
 			{
-				pipexec(args, bkgrd, pPath, firstcmd); //execute pipe
+				if(strstr(args[k], "|") != NULL)
+				{
+					pipexec(args, bkgrd, pPath, firstcmd); //execute pipe
+					rdir = true;
+				}
 			}
-			else
+			
+			if(rdir == false)
 			{
 				myexec(firstcmd, args); //regular execution
 			}
@@ -42,6 +51,7 @@ void cnctexec(char** str, bool bkgrd, char **pPath){	//first copy execution list
 			args = new char*[50];
 			j = 0;
 			firstcmd = false;
+			rdir = false;
                 }	
                /* else if(strcmp(str[i], "&&") == 0)  // "&&": execute second if first true FIXME
 		{
@@ -125,15 +135,21 @@ void cnctexec(char** str, bool bkgrd, char **pPath){	//first copy execution list
 	{
 		exitcode(args[0]);	//check if command is exit
 	}
-	else if(strstr(args, "|") != NULL)
+	for(int k = 0; args[k]; k++)
 	{
-		pipexec(args, bkgrd, pPath, firstcmd); //execute pipe
+		if(strstr(args[k], "|") != NULL)
+		{
+			pipexec(args, bkgrd, pPath, firstcmd); //execute pipe
+			rdir = true;
+		}
 	}
-	else
+
+	if(rdir == false)
 	{
 		myexec(firstcmd, args); //regular execution
 	}
 
+	rdir = false;
 	firstcmd = false;// reset first cmd
 	delete[] args;	//deallocate args
 

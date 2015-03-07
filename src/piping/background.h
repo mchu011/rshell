@@ -23,7 +23,7 @@ bool bgd(int p, char** cmds)
 		int clen = strlen(cmds[p]) -1;
 		if(cker[clen] == '&')//checks if last
 		{		//parse ends with '&'
-			backgrdck = true;
+			backgck = true;
 			cker[clen] = '\0';
 			cmds[p] = cker;
 		}

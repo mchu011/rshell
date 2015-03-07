@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void redircmd(char** a, bool &firstc, bool pip)
+void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 {
 	char** execute;		//checks for redirection commands
 	execute = new char*[50];
@@ -247,7 +247,7 @@ void redircmd(char** a, bool &firstc, bool pip)
 			}
 			scndprt[k] = '\0';
 			
-			pipexec(execute, scndprt, pip);
+			pipexec(execute, bg, scndprt, pip);
 
 			delete[] scndprt;
         	}
@@ -293,11 +293,19 @@ void checkcmd(char** a)
 			perror("error in ls exec");
 		}
 	}
-	else if(strcmp(a[0], "cp") == 0)	//check if command is cp
+	else if(strcmp(a[0], "mv") == 0)
+	{
+		//move 	
+	}
+	else if(strcmp(a[0], "rm") == 0)
+	{
+		//remove 
+	}
+	else if(strcmpga[0], "cp") == 0)	//check if command is cp
 	{
 		if(Asize == 2)
 		{
-			char** rep 
+			char** rep; 
 			rep[0] = a[1];
 			rep[1] = '\0';
 			char** rep2;

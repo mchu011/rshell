@@ -3,7 +3,7 @@
 #include <stdio.h>		// of && and ||	 	
 #include <string.h>			
 #include <sys/types.h>		//FIXME pipe.h modification
-#include <sys/wait.h>		//add redirect file to work on
+#include <sys/wait.h>		//add redirect file content
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <cstdlib>
@@ -17,10 +17,11 @@
 #include "execute.h"
 #include "cntexec.h"
 #include "exit.h"
-#include "piping.h"
+#include "pipe.h"
 #include "cp.h"
 #include "cmdLexec.h"
 #include "redirect.h"
+#include "background.h"
 
 using namespace std;
 	

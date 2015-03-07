@@ -20,11 +20,12 @@
 #piping
 
 -supposed to fork, pipe, or redirect
--has issues compiling at the moment
+-Segfaults
 
 
 #signal
 
--in progress
+-supposed to not use execvp
+-Segfaults
 
 

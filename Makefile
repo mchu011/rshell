@@ -2,6 +2,7 @@
 #define MAKE
 
 objects = src/main.cpp
+ls = src/ls.cpp
 
 flags = -Wall -Werror -ansi -pedantic
 
@@ -12,7 +13,7 @@ rshell: $(objects)
 	g++ $(flags) $(objects) -o shell.o
 
 ls: $(objects)
-	g++ $(flags) $(objects) -o ls.o
+	g++ $(flags) $(ls) -o ls.o
 
 piping:$(objects)
 	g++ $(flags) $(objects) -o pipe.o
