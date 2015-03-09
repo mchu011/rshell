@@ -25,7 +25,7 @@ void myexec(bool &first, char** a)
         }
         else if(child == 0)     //child function
         {
-		signal(SIGINT, NULL);
+		//signal(SIGINT, NULL);
 
 		//signal(SIGTSTP, NULL);
 		if(strcmp(a[0], "exit") == 0)

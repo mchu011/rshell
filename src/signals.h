@@ -11,12 +11,17 @@ void sigc(int signum)//should not exit but go to forground
 {
 	if(signum == SIGINT)
 	{
+		//signal(SIGINT, sigc);
 		cout << endl;
-		exit(0);
-		//signal(SIGINT, SIG_IGN);	
+		//exit(0);
+		//int pid; 
+		//getpid(pid, pid);
+		//kill(pid, SIGKILL);
+		signal(SIGINT, SIG_IGN);	
 		//goes to foreground
 		//returns to main.cpp			
 	}
+	return;
 }
 
 void sigz(int signum)//pause and implement fg and bg
