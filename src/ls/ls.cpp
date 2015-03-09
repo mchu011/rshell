@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 		//column formati
 		ignore = true;
 		//store = takeoutdots(dirfiles);
-		//printcol(ignore);
-		execvp(argv[1], argv);	
+		printcol(ignore);
+		//execvp(argv[1], argv);	
 	}
 	else if(flagA && flagL && flagR)//if alR, lRa, Ral, aRl,
 	{			//laR, or Rla
