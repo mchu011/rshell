@@ -23,7 +23,14 @@ void cnctexec(bool& bg, char** str, int sz){		//first copy execution list into l
                 if(strcmp(str[i],";") == 0)	//';' execute and continue
                 {
 			args[j] = '\0';
-			myexec(firstcmd, args);
+			if(strcmp(args[0], "cd") == 0)
+			{
+				cdpath(args);
+			}
+			else
+			{
+				myexec(firstcmd, args);
+			}
 			
 			delete[] args;	        //reset args
 			
@@ -97,7 +104,14 @@ void cnctexec(bool& bg, char** str, int sz){		//first copy execution list into l
         }
 	args[j] = '\0';//reaches to final command/end of string
 	
-	myexec(firstcmd, args);
+	if(strcmp(args[0], "cd") == 0)
+	{
+		cdpath(args);
+	}
+	else
+	{
+		myexec(firstcmd, args);
+	}
 
 	firstcmd = false;// reset first cmd
 	delete[] args;	//deallocate args
