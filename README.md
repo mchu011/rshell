@@ -28,7 +28,7 @@
 - supposed to not use execvp
 - majority of executions work, so far
 - cd works
-- signals: in progress
+- signals: working on ^Z, c works
 
 
 
