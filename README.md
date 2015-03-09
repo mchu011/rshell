@@ -20,13 +20,15 @@
 #piping
 
 -supposed to fork, pipe, or redirect
-
+-compiles
 
 
 #signal
 
--supposed to not use execvp
--executions work, mostly
-- cd works by itself, but can not be applied to main code
+- supposed to not use execvp
+- majority of executions work, so far
+- cd works
+- signals: in progress
+
 
 

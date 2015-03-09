@@ -37,7 +37,6 @@ void cdpath(char** cdstr) // works
 		{
 			perror("getcwd");
 		}
-		cout << curpath << endl;	
 		//link(curpath, path.c_str());
 		//unlink(curpath);		
 	}

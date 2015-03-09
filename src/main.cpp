@@ -73,7 +73,14 @@ int main ()
 			
 			size = parseCmd(cmd, args);	//parse into tokens
 							//and save into args
-			cnctexec(bg, args, size); //go to execution
+			if(strcmp(args[0], "cd") == 0)
+			{
+				cdpath(args);
+			}
+			else
+			{
+				cnctexec(bg, args, size); //go to execution
+			}
 
 			delete[] args; //reset settings
 			size = 0;
