@@ -106,5 +106,18 @@ int parseCmd(char clist[], char** res) //parse command to tokenize
 	return cntsz;
 }
 
+void parsepath(char*path, char**pPath) //get int of path and
+{                                       //store values in pPath
+        int argsz = 0;
+        pPath[argsz] = strtok(path,":");
+
+        while(pPath[argsz] != NULL)
+        {
+                argsz++;
+                pPath[argsz] = strtok(NULL, ":");
+        }
+        return;
+}
+
 #endif
 

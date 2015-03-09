@@ -20,12 +20,13 @@
 #piping
 
 -supposed to fork, pipe, or redirect
--Segfaults
+
 
 
 #signal
 
 -supposed to not use execvp
--Segfaults
+-executions work, mostly
+- cd works by itself, but can not be applied to main code
 
 

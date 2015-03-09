@@ -1,3 +1,6 @@
+#ifndef LS_H
+#define LS_H
+
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -23,7 +26,6 @@
 
 using namespace std;
 
-
 void lscode(char** arg)
 {
 	bool flagA = false;
@@ -31,7 +33,10 @@ void lscode(char** arg)
 	bool flagR = false;
 	bool ignore = false;	
 	
-	for(int i = 2; i < argc; i++)	//check for flags
+	int sz = 0;
+	for(;arg[sz]; sz++) {}
+
+	for(int i = 1; i < sz; i++)	//check for flags
 	{
 		if(arg[i][0] == '-')
 		{
@@ -108,6 +113,8 @@ void lscode(char** arg)
 		printcol(ignore);
 	}
 	printf("\n");
-	
-	return 0;
+
+	return;	
 }
+
+#endif

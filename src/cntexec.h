@@ -6,15 +6,10 @@
 #include <string.h>			
 
 #include "execute.h"
-#include "exit.h"
-#include "cd.h"
-#include "cp.h"
-#include "ls.h"
-#include "mvrm.h"
 
 using namespace std;
 
-void cnctexec(char** str){		//first copy execution list into local
+void cnctexec(bool& bg, char** str, int sz){		//first copy execution list into local
 					//list to determine execution
 	char** args;	
         args = new char*[50];//allocate separate new char** for single commands
@@ -23,71 +18,12 @@ void cnctexec(char** str){		//first copy execution list into local
 	int i = 0;
         int j = 0;
 
-        while(str[i] != NULL)       //parse through char pointer array for connectors
+        while(str[i] != '\0')       //parse through char pointer array for connectors
         {
                 if(strcmp(str[i],";") == 0)	//';' execute and continue
                 {
 			args[j] = '\0';
-			if(strcmp(args[0], "exit") == 0)
-			{	
-				exitcode(args[0]);    //checks if command is exit
-			}
-			else if(strcmp(args[0], "ls") == 0)
-			{
-				//runls(args); //run ls
-				lscode(args);
-			}
-			else if(strcmp(args[0], "cd") == 0)
-			{
-				cdpath(args);
-			}
-			else if(strcmp(args[0], "mv") == 0 || 
-				strcmp(args[0], "rm") == 0 ||
-				strcmp(args[0], "rmdir") == 0)
-			{
-				mvrm(args);	
-			}
-			else if(strcmp(args[0], "cp") == 0)
-			{
-				int sz = 0;
-				for(;args[sz];sz++) {}
-				if(sz == 2)
-				{
-					char** rep;
-					rep[0] = args[1];
-					rep[1] = '\0';
-					char** rep2;
-					rep2[0] = args[0];
-					rep2[1] = '\0';
-					cprwbuf(rep, rep2);
-				}
-				else
-				{
-					cout << "too many arguments" <<endl;
-					return;
-				}
-				//run cp
-			}
-			else if(strcmp(args[0], "cat") == 0)
-			{
-				//run cat
-			}
-			else if(strcmp(args[0], "echo") == 0)
-			{
-				//run echo
-				string s = "";
-				for(int j = 1; args[j]; j++)
-				{
-					s+=args[j];
-					s+=" ";
-				}
-				cout << s << endl;
-				
-			}
-			else
-			{
-				myexec(firstcmd, args);
-			}
+			myexec(firstcmd, args);
 			
 			delete[] args;	        //reset args
 			
@@ -152,73 +88,16 @@ void cnctexec(char** str){		//first copy execution list into local
 			delete[] args;			//reset args
 			args = new char*[50];
 			j = 0;
-                }
+                }*/
                 else{           //assign argument with string at i
                         args[j] = str[i];
 			j++;
-                }*/
+                }
 		i++;	
         }
 	args[j] = '\0';//reaches to final command/end of string
 	
-	if(strstr(args[0], "exit") != NULL)
-	{
-		exitcode(args[0]);	//check if command is exit
-	}
-	else if(strcmp(args[0], "ls") == 0)
-	{
-		//lscode(args);
-	}
-	else if(strcmp(args[0], "cd") == 0)
-	{
-		cdpath(args);
-	}
-	else if(strcmp(args[0], "mv") == 0 || 
-		strcmp(args[0], "rm") == 0 ||
-		strcmp(args[0], "rmdir") == 0)
-	{
-		mvrm(args);	
-	}
-	else if(strcmp(args[0], "cp") == 0)
-	{
-		int sz = 0;
-		for(;args[sz];sz++) {}
-		if(sz == 2)
-		{
-			char** rep;
-			rep[0] = args[1];
-			rep[1] = '\0';
-			char** rep2;
-			rep2[0] = args[0];
-			rep2[1] = '\0';
-			cprwbuf(rep, rep2);
-		}
-		else
-		{
-			cout << "too many arguments" <<endl;
-			return;
-		}
-		//run cp
-	}
-	else if(strcmp(args[0], "cat") == 0)
-	{
-		//run cat
-	}
-	else if(strcmp(args[0], "echo") == 0)
-	{
-		//run echo
-		string s = "";
-		for(int j = 1; args[j]; j++)
-		{
-			s+=args[j];
-			s+=" ";
-		}
-		cout << s << endl;
-	}
-	else
-	{
-		myexec(firstcmd, args);
-	}
+	myexec(firstcmd, args);
 
 	firstcmd = false;// reset first cmd
 	delete[] args;	//deallocate args

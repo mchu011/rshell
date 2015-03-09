@@ -1,3 +1,6 @@
+#ifndef MVRM_H
+#define MVRM_H
+
 #include <unistd.h>
 #include <stdlib.h>	//working on moving into directories
 #include <iostream>
@@ -11,12 +14,121 @@
 
 using namespace std;
 
-void remelem(char** a, int pos)
+void recdel(string dirnme)
+{
+	vector<string> indir;
+	DIR* dir;
+	struct dirent *drnt;
+	
+	if(dir = opendir(dirnme.c_str()))
+	{
+		while (drnt = readdir(dir))
+		{
+			if(strcmp(".", drnt->d_name) != 0 &&
+				 strcmp("..",drnt->d_name) != 0)
+			{
+				indir.push_back(dirnme + "/" + drnt->d_name);
+			}
+		}
+	}
+	else
+	{
+		perror("close dir rm");
+	}
+	
+	if(indir.size() == 0)
+	{
+		cout << "file directory is not empty" << endl;
+	}
+	struct stat file2;
+	for(int i = 0; i < indir.size(); i++)
+	{
+		char* cdir = (char*)indir[i].c_str();	
+		if(stat(cdir, &file2) != 0)
+		{
+			perror("error in stat indir");
+		}
+		if(S_ISDIR(file2.st_mode))
+		{
+			recdel(indir.at(i));
+			rmdir(indir.at(i).c_str());
+		}
+		else
+		{
+			if(unlink(indir.at(i).c_str()) == -1)
+			{
+				perror("Error in removing dir");
+			}
+		}
+	}
+	return;	
+}
+			
+
+void remelem(char** a)
 {
 	string input;
 	vector<char*> arg;
 	bool rflag = false;
+
+	if(strcmp(a[0], "rmdir") == 0) //check if rmdir
+	{
+		rflag = true;
+	}
+
+	int p = 0;
+	while(a[p] != NULL) //save a as local arg
+	{
+		arg.push_back(a[p]);
+	}
+
 	
+	if(rflag)
+	{
+		struct stat file;
+		for(int i = 1; i < arg.size(); i++)
+		{
+			if(stat(arg.at(i), &file) != 0)
+			{
+				perror("error at file stat");
+			}
+			if(S_ISDIR(file.st_mode))
+			{
+				string dirnam = string(arg.at(i));
+				recdel(dirnam);
+				rmdir(dirnam.c_str());
+			}
+			else
+			{
+				unlink(arg.at(i));
+			}
+		}
+	}
+	else
+	{
+		struct stat files;
+		for(int i = 1; i < arg.size(); i++)
+		{
+			if(stat(arg.at(i), &files) != 0)
+			{
+				perror("error at file stat");
+			}
+			if(S_ISDIR(files.st_mode))
+			{
+				if(rmdir(arg.at(i)) == -1)
+				{
+					perror("rmelem else S_ISDIR");
+				}
+			}
+			else
+			{
+				unlink(arg.at(i));
+			}
+		}
+	}
+					
+	
+		
 	/*int k = 0;
 	while(arg[k]) //looks for r for remove directory
 	{
@@ -73,15 +185,15 @@ int isdir(char*str) //checks if file is a directory or not
 	return 0; //returns file
 }
 	
-void movef(char** a, int pos, int csz)
+void movef(char** a, int sz)
 {
+	sz--;
 //need to check directories/paths
-	int sz = csz - pos;
 	int d, old;
 	if(sz == 2)
 	{
-		char * oldfile = a[csz - 2];
-		char * newfile = a[csz - 1];
+		char * oldfile = a[1];
+		char * newfile = a[2];
 
 		//check if string is directory
 		old = isdir(oldfile);
@@ -148,21 +260,16 @@ void movef(char** a, int pos, int csz)
 
 void mvrm(char** arg)
 {
-	int size = 0;
-	for(;arg[size];size++) {}
-	for(int k = 0; k < ; k++)
+	if(strstr(arg[0], "rm") != NULL)
 	{
-		if(strstr(arg[k], "rm") != NULL)
-		{
-			int hold = k+1;
-			remelem(arg, hold);
-		}
-		else if(strstr(arg[k], "mv") != NULL)
-		{
-			int hold = k+1;
-			movef(arg, hold, size);
-		}
+		remelem(arg);
+	}
+	else if(strcmp(arg[0], "mv") == 0)
+	{
+		int size = 0;
+		for(;arg[size];size++) {}
+		movef(arg, size);
 	}
 	
 }
-
+#endif

@@ -15,6 +15,7 @@
 #include "gethostname.h"
 #include "getusername.h"
 #include "execute.h"
+#include "background.h"
 #include "cntexec.h"
 #include "exit.h"
 #include "signals.h"
@@ -22,11 +23,19 @@
 #include "cp.h"
 #include "ls.h"
 #include "mvrm.h"
+#include "color.h"
+#include "ignoredots.h"
+#include "colformat.h"
+#include "listformat.h"
 
 using namespace std;
 	
 int main ()
 {
+	char*path = getenv("PATH");
+	char*pPath[50];
+	parsepath(path, pPath);
+	
 	char*  username;
 	char  hostname[25];
 	getusername(username);	//getusername
@@ -37,6 +46,7 @@ int main ()
 	char buf[BUFSIZ];
 	char** args;
 	int size = 0;
+	bool bg = false;
 
 	while (1) 
 	{
@@ -56,7 +66,6 @@ int main ()
 		strcpy(cmd, cmdLn.c_str());	//copy into a char pointer
 		
 		exitcode(cmd);	//exit if phrase is exit
-
 		
 		if(strcmp(cmd, "") != 0) //if string is not empty 	
 		{
@@ -64,19 +73,14 @@ int main ()
 			
 			size = parseCmd(cmd, args);	//parse into tokens
 							//and save into args
-			if(size == 2 && strcmp(args[0], "cd") == 0)
-			{
-				cdpath(args); //go to new path of cd
-			}			//and only two variables
-			else
-			{
-				cnctexec(args); //go to execution
-			}
+			cnctexec(bg, args, size); //go to execution
+
+			delete[] args; //reset settings
+			size = 0;
+			bg = false;
 		}
 
 		sleep(1);//pause 1 sec
-		delete[] args;
-		size = 0;
 	}
 
 	return 0;

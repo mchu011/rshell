@@ -4,6 +4,13 @@
 #include <unistd.h>	//executes via fork
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
+
+#include "cd.h"
+#include "ls.h"
+#include "mvrm.h"
+#include "cp.h"
+#include "exit.h"
 
 void myexec(bool &first, char** a)
 {
@@ -21,14 +28,70 @@ void myexec(bool &first, char** a)
 		signal(SIGINT, NULL);
 
 		//signal(SIGTSTP, NULL);
-                if((execute = execvp(a[0], a)) == -1) //execute argurments
+		if(strcmp(a[0], "exit") == 0)
+		{	
+			exitcode(a[0]);    //checks if command is exit
+		}
+		else if(strcmp(a[0], "ls") == 0)//execute arguments
+		{ 
+			lscode(a); //run ls
+		}
+		else if(strcmp(a[0], "mv") == 0 || //run rm and mv
+			strcmp(a[0], "rm") == 0 ||
+			strcmp(a[0], "rmdir") == 0)
+		{
+			mvrm(a);	
+		}
+		else if(strcmp(a[0], "cp") == 0)
+		{
+			int sz = 0;
+			for(;a[sz];sz++) {}
+			if(sz == 2)
+			{
+				char** rep;
+				rep[0] = a[1];
+				rep[1] = '\0';
+				char** rep2;
+				rep2[0] = a[0];
+				rep2[1] = '\0';
+				cprwbuf(rep, rep2);
+			}
+			else
+			{
+				cout << "too many arguments" <<endl;
+				return;
+			}
+			//run cp
+		}
+		else if(strcmp(a[0], "cd") == 0) // run cd
+		{
+			cdpath(a);
+		}
+		else if(strcmp(a[0], "cat") == 0)
+		{
+			//run cat
+		}
+		else if(strcmp(a[0], "echo") == 0)
+		{
+			//run echo
+			string s = "";
+			for(int j = 1; a[j]; j++)
+			{
+				s+=a[j];
+				s+=" ";
+			}
+			cout << s << endl;
+			
+		}
+       		/*if((execute = execvp(a[0], a)) == -1)
 		{
 			perror("myexec cvp");
-		}
-		else if(execute == 0)
+		}*/
+		if(errno == 0)
 		{
 			first = true;
 		}
+		sleep(1);
                 exit(0);
         }
         else            //parent function
@@ -38,6 +101,7 @@ void myexec(bool &first, char** a)
                         perror("there's an error with wait().");
                 }
         }
+	
 	
 	return;
 }
