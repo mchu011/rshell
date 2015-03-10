@@ -14,7 +14,7 @@
 using namespace std;
 
 void cprwbuf(char** in, char** out) {
-	char* inner;
+	char* inner = (char*)malloc(1);
 	int hold = 0;
 	for(int d = 0; in[d] ; d++)
 	{
@@ -24,7 +24,7 @@ void cprwbuf(char** in, char** out) {
 			hold++;
 		}
 	}
-	char* outer;
+	char* outer = (char*)malloc(1);
 	hold = 0;
 	for(int d = 0; out[d]; d++)
 	{

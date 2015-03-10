@@ -28,10 +28,10 @@ void sigz(int signum)//pause and implement fg and bg
 {
 	if(signum == SIGTSTP)
 	{
-		int pid;
+		//int pid;
 		//getpid(pid, pid); //error here
-		kill(pid, SIGSTOP); //need alternate pause
-		SIGCONT;	//need fg and bg
+		//kill(pid, SIGSTOP); //need alternate pause
+		//SIGCONT;	//need fg and bg
 		//returns to main.cpp 
 	}
 }

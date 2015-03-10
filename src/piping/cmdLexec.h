@@ -33,9 +33,11 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 			}
 			dest[k] = '\0';
 
-			if(execute[0] == "0" || execute[0] == "1" || execute[0] == "2")
+			if(strcmp(execute[0], "0") == 0 || 
+				strcmp(execute[0], "1") == 0 || 
+				strcmp(execute[0], "2") == 0)
 			{
-				char* conv;
+				char* conv = (char*)malloc(1);
 				int hold = 0;
 				for(int k = 0;a[k]; k++)
 				{
@@ -45,7 +47,7 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 						hold++;
 					}
 				}
-				if(execute[0] == "0")//input
+				if(strcmp(execute[0], "0") == 0) //input
 				{
 					int fd = 0;
 				        if (fd == -1)
@@ -76,7 +78,7 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
         				if(-1 == close(ofd)) perror("close dest");
 		
 				}
-				else if(execute[0] == "1")//output
+				else if(strcmp(execute[0], "1") == 0) //output 
 				{
 					int fd = 1;
 					int ofd = open(conv, O_WRONLY |O_CREAT | O_EXCL);
@@ -97,7 +99,7 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 					if(close(ofd) == -1) perror("close dest");
 						
 				}
-				else if(execute[0] == "2")//error
+				else if(strcmp(execute[0], "2") == 0)//error
 				{
 					int fd = 2;
 					int ofd = open(conv, O_WRONLY |O_CREAT | O_EXCL);
@@ -136,9 +138,11 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 			}
 			dest[k] = '\0';
 
-			if(execute[0] == "0" || execute[0] == "1" || execute[0] == "2")
+			if(strcmp(execute[0], "0") == 0 || 
+				strcmp(execute[0], "1") == 0 || 
+				strcmp(execute[0], "2") == 0)
 			{
-				char* conv;
+				char* conv = (char*)malloc(1);
 				int hold = 0;
 				for(int k = 0;a[k]; k++)
 				{
@@ -148,7 +152,7 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 						hold++;
 					}
 				}
-				if(execute[0] == "0")//input
+				if(strcmp(execute[0], "0") == 0) //input 
 				{
 					int fd = 0;
 				        if (fd == -1)
@@ -179,7 +183,7 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 
         				if(-1 == close(ofd)) perror("close dest");		
 				}
-				else if(execute[0] == "1")
+				else if(strcmp(execute[0], "1") == 0) //output 
 				{
 					int fd = 1;
 					int ofd = open(conv, O_WRONLY |O_CREAT | O_EXCL);
@@ -200,7 +204,7 @@ void redircmd(char** a, bool& bg, bool &firstc, bool pip)
 					if(close(ofd) == -1) perror("close dest");
 					
 				}
-				else if(execute[0] == "2")
+				else if(strcmp(execute[0], "2") == 0)//error
 				{
 					int fd = 2;
 					int ofd = open(conv, O_WRONLY |O_CREAT | O_EXCL);
@@ -301,16 +305,12 @@ void checkcmd(char** a)
 	{
 		//remove 
 	}
-	else if(strcmpga[0], "cp") == 0)	//check if command is cp
+	else if(strcmp(a[0], "cp") == 0)	//check if command is cp
 	{
 		if(Asize == 2)
 		{
-			char** rep; 
-			rep[0] = a[1];
-			rep[1] = '\0';
-			char** rep2;
-			rep2[0] = a[0];
-			rep2[1] = '\0';
+			char* rep[] = {a[1],'\0'};
+			char* rep2[] = {a[0],'\0'};
 
 			cprwbuf(rep, rep2);	
 		}

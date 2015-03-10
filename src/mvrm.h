@@ -19,15 +19,16 @@ void recdel(string dirnme)
 	vector<string> indir;
 	DIR* dir;
 	struct dirent *drnt;
-	
-	if(dir = opendir(dirnme.c_str()))
+	int mrsz = 0;	
+	if((dir = opendir(dirnme.c_str())))
 	{
-		while (drnt = readdir(dir))
+		while ((drnt = readdir(dir)))
 		{
 			if(strcmp(".", drnt->d_name) != 0 &&
 				 strcmp("..",drnt->d_name) != 0)
 			{
 				indir.push_back(dirnme + "/" + drnt->d_name);
+				mrsz++;
 			}
 		}
 	}
@@ -36,12 +37,12 @@ void recdel(string dirnme)
 		perror("close dir rm");
 	}
 	
-	if(indir.size() == 0)
+	if(mrsz == 0)
 	{
 		cout << "file directory is not empty" << endl;
 	}
 	struct stat file2;
-	for(int i = 0; i < indir.size(); i++)
+	for(int i = 0; i < mrsz; i++)
 	{
 		char* cdir = (char*)indir[i].c_str();	
 		if(stat(cdir, &file2) != 0)
@@ -77,16 +78,19 @@ void remelem(char** a)
 	}
 
 	int p = 0;
+	int acnt = 0;
 	while(a[p] != NULL) //save a as local arg
 	{
 		arg.push_back(a[p]);
+		p++;
+		acnt++;
 	}
 
 	
 	if(rflag)
 	{
 		struct stat file;
-		for(int i = 1; i < arg.size(); i++)
+		for(int i = 1; i < acnt; i++)
 		{
 			if(stat(arg.at(i), &file) != 0)
 			{
@@ -107,7 +111,7 @@ void remelem(char** a)
 	else
 	{
 		struct stat files;
-		for(int i = 1; i < arg.size(); i++)
+		for(int i = 1; i < acnt; i++)
 		{
 			if(stat(arg.at(i), &files) != 0)
 			{
@@ -221,9 +225,7 @@ void movef(char** a, int sz)
 		}
 		
 		directory.push_back("\0");
-		int i = 0;
 		//search current directory if same as newfile
-
 
 		if(d == 1 && old == 1) //if both are directories
 		{

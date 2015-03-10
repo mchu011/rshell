@@ -14,7 +14,6 @@
 
 void myexec(bool &first, char** a)
 {
-	int execute;
 	int status;
 	int child; 
 	child = fork(); //fork
@@ -48,12 +47,9 @@ void myexec(bool &first, char** a)
 			for(;a[sz];sz++) {}
 			if(sz == 2)
 			{
-				char** rep;
-				rep[0] = a[1];
-				rep[1] = '\0';
-				char** rep2;
-				rep2[0] = a[0];
-				rep2[1] = '\0';
+				char* rep[] = {a[1],'\0'};
+	                        char* rep2[] = {a[0],'\0'};
+
 				cprwbuf(rep, rep2);
 			}
 			else

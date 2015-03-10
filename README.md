@@ -20,15 +20,17 @@
 #piping
 
 -supposed to fork, pipe, or redirect
--compiles
+-fixed compiling error 
+-suffering segfaults
 
 
 #signal
 
+- no folder yet
 - supposed to not use execvp
 - majority of executions work, so far
 - cd works
-- signals: working on ^Z, but ^C works
+- signals: working on ^Z
 
 
 

@@ -12,7 +12,11 @@ bool bgd(int p, char** cmds)
 	bool backgck = false;
 	if(p > 0) p--;	//sets to last cmd
 	
-	if(strcmp(cmds[p], "&") == 0)//checks if last
+	if(strcmp(cmds[p], "\0") == 0)
+	{
+		p--;
+	}
+	if(strstr(cmds[p], "&") == 0)//checks if last
 	{				//cmd is &
 		backgck = true;
 		cmds[p] = NULL;

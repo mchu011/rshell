@@ -16,7 +16,6 @@ void dupit(char **d)	//figure out where this goes
 		int filed;
 		if(strcmp(d[l], ">") == 0)
 		{
-			d[l] == '\0';
 			if((filed = open(d[l=1], O_CREAT | O_WRONLY | O_TRUNC, 0666))==-1)
 				 perror("prob with open.");
 			if((dup2(filed, 1) == -1)) perror("issue with dup2");
@@ -24,7 +23,6 @@ void dupit(char **d)	//figure out where this goes
 		}
 		else if(strcmp(d[l], ">>") == 0)
 		{
-			d[l] == '\0';
 			if((filed = open(d[l=1], O_CREAT | O_WRONLY | O_APPEND, 0666))==-1)
 				 perror("prob with open.");
 			if((dup2(filed, 1) == -1)) perror("issue with dup2");
@@ -32,7 +30,6 @@ void dupit(char **d)	//figure out where this goes
 		}
 		else if(strcmp(d[l], "<")== 0)
 		{
-			d[l] == '\0';
 			if((filed = open(d[l=1], O_RDONLY))==-1)
 				 perror("prob with open.");
 			if((dup2(filed, 0) == -1)) perror("issue with dup2");
