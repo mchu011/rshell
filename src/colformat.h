@@ -52,38 +52,50 @@ void printcol(bool &ig)
 
 	numcol = 60/avgsz; //gets number of columns
 
+	int itcnt = 0;
 	int rows = 0;
 	rows = totit/numcol; //finds the number of rows needed
 	int* mxcol; //get max column size for each column
-	
+
 	for(int c = 0; c < numcol; c++)
 	{
 		mxcol[c] = 0;
 	}
 	
-	for(int k = 0; k < numcol; k++) 
+	for(int k = 0; k < numcol; k++)//get size of each column 
 	{
 		for(int p = 0;(p*rows) < totit; p++)
 		{
-			int s = p*rows;
+			int s = p*(rows+1);
 			int sz = sizeof(dirfiles[s]);
-			if(sz > mxcol[k]) //segfault here fixme
+			if(sz > mxcol[k])
 			{
 				mxcol[k] = sz;
 			}
 		}
 	}
-	
+
 	int rcnt = 0;
 	for(int k = 0; k < rows; k++) //print files
 	{
-		for(int p = 0;((p*rows) < totit) && (rcnt < rows); p++)
+		for(int p = 0;((p*(rows)) < totit) && (rcnt < rows); p++)
 		{
 			struct stat sfiles;
 			char filepath[1024];
 			strcpy(filepath, dirName);
 			strcat(filepath, "/");
+			
 			strcat(filepath, dirfiles[p*rows].c_str());
+			
+			itcnt += sizeof(dirfiles[p*rows]);
+			
+			if(itcnt+2 > 70)
+			{
+				cout << endl;
+				itcnt = 0;
+				itcnt +=sizeof(dirfiles[p*rows]);
+			}
+			
 			cout << left << dirfiles[p*rows] << flush;
 			
 			int space = mxcol[k] - sizeof(dirfiles[p*rows]);
@@ -93,67 +105,25 @@ void printcol(bool &ig)
 				for(int q = 0; q < space; q++)
 				{
 					cout << " " << flush;
+					itcnt += 1;
 				}
 			}
-			cout << "  " << flush;
+			itcnt += 2;
+			if(rows == 1)
+			{
+				cout << "  " << flush;
+			}
+			else
+			{
+				cout << "\t" << flush;
+			}
+			
 		}
 		if(rcnt >= rows)
 		{
 			break;
 		}
 	}
-	
-
-
-
-
-	/*vector<string>* cols; //sort into columns
-	
-	int mrow = 0;
-	int j;
-	for(int k = 0; k < numcol; k++)//puts directory into columns
-	{
-		for(j = 0; (j < rows) && dirfiles[mrow] != "\0"; j++)
-		{
-			cols[k][j] = dirfiles[mrow];//FIXME segfaults here
-			mrow++;	
-			cout << cols[k][j] << endl;
-		}	
-		cols[k][j].push_back('\0');
-	}
-
-	for(int c = 0; c < rows; c++)
-	{
-		for(int d = 0; cols[d][c] != "\0"; d++)
-		{
-			if(sizeof(cols[d][c]) > mxcol[d])
-			{
-				mxcol[d] = sizeof(cols[d][c]);
-			}
-		}
-	}
-	
-	for(int c = 0; c < rows; c++)//outputs into column rows
-	{
-		for(int d = 0; cols[d][c] != "\0"; d++)
-		{
-			struct stat sfiles;
-			char filepath[1024];
-			strcpy(filepath, dirName);
-			strcat(filepath, "/");
-			strcat(filepath, cols[d][c].c_str());
-
-			cout <<cols[d][c] << flush;
-			int space = mxcol[d] -sizeof(cols[d][c]);
-			
-			for(int k = 0; k < space; k++)
-			{
-				cout << " " << flush;
-			}
-			cout << "\t" << flush;
-		}
-		cout << endl;
-	}*/
 
 	//must always have five columns
 	//find width, height, and tab size here	

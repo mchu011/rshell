@@ -2,19 +2,19 @@
 
 -can execute with single command or multiple commands of ';'
 -has extra credit of getusername and gethostname
--BUGS: cannot execute commands with '||' and/or '&&'
+***BUGS*** cannot execute commands with '||' and/or '&&'
 
 
 #ls
 
--can execute -l flags  and basic column format properly
+-can execute generally execute ls, l, and R flags properly to a point
 -list format: completed to best of ability
 -column format: completed to best of ability
--colors(extra credit): issues
+-colors(extra credit): not doing
 -a: print all items in column format
 -l: prints total and lists in list format
 -R: Prints .: and list in column format
--BUGS: column format can only print single line correctly
+***BUGS:*** column format might have errors with larger items, list format has issues with permissions and total, and is read in from arguments
 
 
 #piping

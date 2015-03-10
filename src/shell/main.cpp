@@ -46,17 +46,18 @@ int main ()
 		strcpy(cmd, cmdLn.c_str());	//copy into a char pointer
 		
 		exitcode(cmd);	//exit if phrase is exit
-
-		if(strcmp(cmd, "") != 0)//if the command is null	
+	
+		
+		if(strcmp(cmd, "") != 0|| cmd[0] != '\0')//if the command is null	
 		{
 			args = new char*[50];	//allocate new char** array
 
 			parseCmd(cmd, args);	//parse into tokens
 						//and save into args
 			cnctexec(args);
+			delete[] args;
 		}
 		//sleep(1);//pause 1 sec
-		delete[] args;
 	}
 
 	return 0;
