@@ -20,47 +20,24 @@
 
 using namespace std;
 
-void printlfcolor(struct stat s, dirent * dirtp)
+void pcolor(struct stat s, dirent * dirtp)
 {
+	string black = "\033[30m";
+	string green = "\033[32m";
+	string blue = "\033[34m";
 	if(s.st_mode & S_IFDIR) //blue
 	{	
-		if(dirtp->d_name[0] == '.')
-		{
-			printf("\033[47m\033[38;5;32m");
-			printf(dirtp->d_name);
-			printf("\033[0;00m");
-		}
-		else
-		{
-			printf("\033[38;5;32m");
-			printf(dirtp->d_name);
-			printf("\033[0;00m");
-		}
+		cout << blue << dirtp->d_name << flush;
+		cout << black <<"/" << flush;
 	}
 	else if ((s.st_mode & S_IXUSR))//green
 	{
-		if(dirtp->d_name[0] == '.')
-		{
-			printf("\033[47m\033[38;5;34m");
-			printf(dirtp->d_name);
-			printf("\033[0;00m");
-		}
-		else
-		{
-			printf("\033[38;5;34m");
-			printf(dirtp->d_name);
-			printf("\33[0;00m");
-		}
-	}
-	else if(dirtp->d_name[0] == '.')//
-	{
-		printf("\033[0;47m");
-		printf(dirtp->d_name);
-		printf("\033[0;00m");
+		cout << green << dirtp->d_name << flush;
+		cout << black <<"*" << flush;
 	}
 	else//black
 	{
-		printf(dirtp->d_name);
+		cout << black << dirtp->d_name << flush;
 	}
 }
 

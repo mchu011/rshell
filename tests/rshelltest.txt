@@ -1,0 +1,9 @@
+ls
+echo hello
+echo world
+#see comments
+ls -a; echo hello; mkdir dtest
+echo see; ls -l;  rmdir dtest; cd ..
+cd rshell; cat try; touch ftest; ls
+echo hello #only ; works so far
+exit

@@ -10,7 +10,7 @@ vector<string> takeoutdots(vector<string> s)
 {
 	char* check;
 	vector<string> newstr;
-	for(int k = 0; k < s.size(); k++)
+	for(unsigned k = 0; k < s.size(); k++)
 	{
 		check = (char*)s[k].c_str();
 		

@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
 	{	
 		//column formati
 		ignore = true;
-		//store = takeoutdots(dirfiles);
 		printcol(ignore);
 		//execvp(argv[1], argv);	
 	}
@@ -95,7 +94,6 @@ int main(int argc, char *argv[])
 	{
 		printf(".:\n");
 		ignore = true;
-		//store = takeoutdots(dirfiles);
 		printl(ignore);
 	}
 	else if(flagA)	//if a
@@ -107,7 +105,6 @@ int main(int argc, char *argv[])
 	else if(flagL)	// if l
 	{
 		ignore = true;
-		//store = takeoutdots(dirfiles);
 		printl(ignore);//execute
 	}
 	else if(flagR)	//if R
@@ -115,7 +112,6 @@ int main(int argc, char *argv[])
 		printf(".:\n");
 		//column format
 		ignore = true;
-		//store = takeoutdots(dirfiles);
 		printcol(ignore);
 	}
 	printf("\n");

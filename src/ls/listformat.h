@@ -107,52 +107,6 @@ int maxsz(const struct stat &s, vector<string> d)
 	}
 	
 	return count/k;	
-	/*DIR *dir;
-	if(!(dir = opendir(dirNm)))
-	{
-		perror("error with maxsz opendir");
-	}
-	
-	dirent *findlen;
-
-	while(findlen = readdir(dir))
-	{
-		if(errno != 0)
-		{
-			perror("error with maxsz readdir");
-		}
-		struct stat d;
-
-		char dpath[1024];
-		strcpy(dpath, dirNm);
-		strcat(dpath, "/");
-		strcat(dpath, findlen->d_name);
-
-		if(stat(dpath, &dig) == -1)
-		{
-			perror("There's an issue with 1st stat");
-		}
-		
-		if(GetBit(flags, 0))
-		{
-			blocks += d.st_blocks;
-		}
-			if(findlen->d_name[0] != '.')
-			{
-				blocks += d.st_blocks;
-			}
-		}
-		
-		int len1 = 1;
-		int len2 = 1;
-		int curd1 = d.st_size;
-		int curd2 = d.st_nlink;
-		while(curd1 /= 10) len1++;
-		if(len1 > maxdsz) maxdsz = len1;
-		while (curd2 /= 10) len2++;
-		if(len2 > maxdlnk) maxdlnk = len2;
-	}
-	closedir(dir);*/
 }
 
 void printl(bool &ig) //case l
@@ -208,12 +162,6 @@ void printl(bool &ig) //case l
 
 		int size = 0;
 		
-		if(dirfiles[i][0] == '.')
-		{
-			//add / tothe end of string
-			//dirfiles[i] += '/';	
-		}		
-
 		if(ig) //if dots need to be taken out
 		{
 			if(dirfiles[i][0] == '.')
@@ -229,7 +177,7 @@ void printl(bool &ig) //case l
 				cout << setw(7) << right << size << " ";
 				printdate(sfiles);		//print date
 				cout << dirfiles[i] << flush;	
-				//printlfcolor(sfiles, dirtpoint);//print file
+				//pcolor(sfiles, dirtpoint);//print file
 				printf("\n");
 			}
 	
@@ -243,7 +191,7 @@ void printl(bool &ig) //case l
 			cout << setw(5) << right << size << " ";
 			printdate(sfiles);		//print date
 			cout << dirfiles[i] << flush;	
-			//printlfcolor(sfiles, dirtpoint);//print file
+			//pcolor(sfiles, dirtpoint);//print file
 			printf("\n");
 		}
 		i++;

@@ -1,0 +1,12 @@
+ls
+ls -a
+ls -l
+ls -R
+ls -la
+ls -l -R
+ls -R -l
+ls -lR
+ls -Rl
+ls -aR
+ls -al
+ls -alR

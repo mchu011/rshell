@@ -4,6 +4,8 @@
 #include <dirent.h> //need to get better format output 
 #include <vector>	
 #include <string.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
 			
 using namespace std;
 
@@ -41,91 +43,138 @@ void printcol(bool &ig)
 
 	int totit = 0;
 	int charsz = 0;
-	for(;dirfiles[totit] != "\0";totit++) //get total number to display
+	for(;dirfiles[totit] != "\0";totit++) //get total number of items
 	{
-		charsz += sizeof(dirfiles[totit]); //for estimating colnumbers
-	}
-	int numcol = 0;
-	int avgsz = 0;
-	
-	avgsz = charsz/totit;//gets average size of strings
-
-	numcol = 60/avgsz; //gets number of columns
-
-	int itcnt = 0;
-	int rows = 0;
-	rows = totit/numcol; //finds the number of rows needed
-	int* mxcol; //get max column size for each column
-
-	for(int c = 0; c < numcol; c++)
-	{
-		mxcol[c] = 0;
+		charsz += sizeof(dirfiles[totit]); //for finding column splits
+		charsz +=2;
 	}
 	
-	for(int k = 0; k < numcol; k++)//get size of each column 
+	struct winsize w;
+	ioctl(0, TIOCGWINSZ, &w);
+
+	int scnsz = w.ws_col - 5; //screen size with indents
+	int rows;
+	
+	if(charsz%scnsz == 0)
 	{
-		for(int p = 0;(p*rows) < totit; p++)
+		rows = charsz/scnsz; //gets number of rows needed
+	}
+	else
+	{
+		int so = scnsz/2;
+		if((charsz%scnsz) > so)
 		{
-			int s = p*(rows+1);
-			int sz = sizeof(dirfiles[s]);
-			if(sz > mxcol[k])
+			int hold = charsz;
+			rows = hold/scnsz;
+			while((hold%scnsz) > so)
 			{
-				mxcol[k] = sz;
+				rows++;
+				hold -=scnsz;
 			}
+			rows++;
+		}
+		else
+		{	
+			rows= (charsz/scnsz)+1;
 		}
 	}
 
-	int rcnt = 0;
-	for(int k = 0; k < rows; k++) //print files
+	if(rows == 1) // if just one row
 	{
-		for(int p = 0;((p*(rows)) < totit) && (rcnt < rows); p++)
+		for(int i = 0; i < totit; i++)
 		{
-			struct stat sfiles;
-			char filepath[1024];
-			strcpy(filepath, dirName);
-			strcat(filepath, "/");
-			
-			strcat(filepath, dirfiles[p*rows].c_str());
-			
-			itcnt += sizeof(dirfiles[p*rows]);
-			
-			if(itcnt+2 > 70)
+			cout << left << dirfiles[i] << flush;
+			cout << "  " <<flush;
+		}	
+		
+		cout << endl;
+	}
+	else	// if more than one row
+	{ 
+		int newcol;
+		if(totit%rows != 0)	//get number of columns
+		{
+			newcol = (totit/rows)+1; //if odd
+		}
+		else	//if even
+		{
+			newcol = (totit/rows);
+		}
+		
+		vector<unsigned int> mxcol;//get max column size
+	
+		for(int c = 0; c < newcol; c++)
+		{
+			mxcol.push_back(0);
+		}
+	
+		vector<string> cols;
+
+		int item = 0;		//into column array and get max column size
+		for(int r = 0; r < rows && item < totit; r++)
+		{
+			for(int c = 0; c < newcol && (r+(rows*c)) < totit; c++)
 			{
-				cout << endl;
-				itcnt = 0;
-				itcnt +=sizeof(dirfiles[p*rows]);
-			}
-			
-			cout << left << dirfiles[p*rows] << flush;
-			
-			int space = mxcol[k] - sizeof(dirfiles[p*rows]);
-			
-			if(space > 0)
-			{
-				for(int q = 0; q < space; q++)
+				cols.push_back(dirfiles[r+(rows*c)]);
+				
+				string see = dirfiles[r+(rows*c)];//check string sz
+				char* str = (char*)see.c_str();
+				unsigned int strsz = 0;
+				for(;str[strsz];strsz++){}
+	
+				item++;
+				if(mxcol[c] < strsz)
 				{
-					cout << " " << flush;
-					itcnt += 1;
+					mxcol[c] = strsz;
 				}
 			}
-			itcnt += 2;
-			if(rows == 1)
-			{
-				cout << "  " << flush;
-			}
-			else
-			{
-				cout << "\t" << flush;
-			}
-			
+			cols.push_back("\0");
 		}
-		if(rcnt >= rows)
+		
+		item = 0;
+		int rcnt = 0;
+		for(int r = 0; r < rows && item < totit; r++)
 		{
-			break;
+			for(int c = 0; c < newcol; c++)
+			{
+				string s = cols[item];
+				char* str = (char*)s.c_str();//size of current str
+				int stsz = 0;
+				for(;str[stsz];stsz++){}
+	
+				rcnt += stsz;
+				int space = mxcol[c] - stsz;
+				if(w.ws_col < (rcnt+2+space))
+				{
+					cout << endl;
+					rcnt = stsz;
+					cout << cols[item] << flush;
+				}
+				else
+				{
+					cout << cols[item] << flush;
+					if(space > 0)
+					{
+						for(int sp = 0; sp < space; sp++)
+						{
+							cout << " " <<flush;
+							rcnt++;
+						}
+					}
+					rcnt+=2;
+					cout << "  " << flush;
+				}
+				item++;
+			}
+			item++;
+			rcnt = 0;
+			if(r+1 < rows)
+			{
+				cout << endl;
+			}
 		}
 	}
-
-	//must always have five columns
+	closedir(directory);	
 	//find width, height, and tab size here	
 
 	return;
