@@ -17,7 +17,7 @@ void sigc(int signum)//should not exit but go to forground
 		//int pid; 
 		//getpid(pid, pid);
 		//kill(pid, SIGKILL);
-		//signal(SIGINT, SIG_IGN);	
+		signal(SIGINT, SIG_IGN);	
 		//goes to foreground
 		//returns to main.cpp			
 	}
@@ -30,7 +30,7 @@ void sigz(int signum)//pause and implement fg and bg
 	{
 		//int pid;
 		//getpid(pid, pid); //error here
-		//kill(pid, SIGSTOP); //need alternate pause
+		kill(0, SIGCONT); //need alternate pause
 		//SIGCONT;	//need fg and bg
 		//returns to main.cpp 
 	}

@@ -11,7 +11,7 @@ using namespace std;
 
 void dupit(char **d)	//figure out where this goes
 {
-	for(int l = 0; d[l] ; l++)
+	/*for(int l = 0; d[l] ; l++)
 	{
 		int filed;
 		if(strcmp(d[l], ">") == 0)
@@ -35,7 +35,7 @@ void dupit(char **d)	//figure out where this goes
 			if((dup2(filed, 0) == -1)) perror("issue with dup2");
 			break;
 		}
-	}
+	}*/
 }
 
 void pipexec(char** a, bool& bkgd, char** pth, bool&firstcmd) //execute piping
